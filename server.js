@@ -1,6 +1,6 @@
 const detector = require('./src/Detector')
 const express = require('express')
-const HOST = '0.0.0.0'
+const HOST = process.env.server_url || '0.0.0.0'
 const PORT = 9999
 const app = express()
 const multer  = require('multer')
