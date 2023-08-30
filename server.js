@@ -8,12 +8,16 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 app.post('/detect', upload.fields([{name: "buffer"}, {name: "zone"}]), async (req, res) => {
 	console.log(req.rawHeaders)
-	if (req.files.buffer[0].buffer && req.body.zone) {
-		const detections = await detector.detect(req.files.buffer[0].buffer, JSON.parse(req.body.zone))
-		console.log(detections)
-		res.json(detections)
-	} else {
-		res.json({answer: "something not sended"})
+	try {
+		if (req.files.buffer[0].buffer && req.body.zone) {
+			const detections = await detector.detect(req.files.buffer[0].buffer, JSON.parse(req.body.zone))
+			console.log(detections)
+			res.json(detections)
+		} else {
+			res.json({answer: "something not sended"})
+		}
+	} catch (error) {
+		console.log(error)	
 	}
 })
 app.listen(PORT, HOST, () => console.log(`Running on http://${HOST}:${PORT}`))
