@@ -10,7 +10,8 @@ app.post('/detect', upload.fields([{name: "buffer"}, {name: "zone"}]), async (re
 	console.log(req.rawHeaders)
 	try {
 		if (req.files.buffer[0].buffer && req.body.zone) {
-			const detections = await detector.detect(req.files.buffer[0].buffer, JSON.parse(req.body.zone))
+			// const detections = await detector.detect(req.files.buffer[0].buffer, JSON.parse(req.body.zone))
+			const detections = []
 			console.log(detections)
 			res.json(detections)
 		} else {
