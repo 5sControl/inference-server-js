@@ -5,7 +5,7 @@ class Detector {
     async init() {
         if (!this.model) {
             console.time(`detector models load`)
-            this.model = await loadYoloV8(`./yolov8s-320_web_model/model.json`)
+            this.model = await loadYoloV8(`./yolov8m-320_web_model/model.json`)
             console.timeEnd(`detector models load`)
         }
     }

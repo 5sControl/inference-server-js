@@ -3,7 +3,7 @@ const tf = require('@tensorflow/tfjs-node')
 const labels = require("./labels")
 
 const MODELS = {
-    './yolov8s-320_web_model/model.json': labels
+    './yolov8m-320_web_model/model.json': labels
 }
 
 class YOLOv8 {
