@@ -1,17 +1,17 @@
-const ModelWorker = require('./workers/ModelWorker')
+const loadYoloV8 = require('./models/yolov8')
 const {createCanvas, Image} = require('@napi-rs/canvas')
 
 class Detector {
-    constructor() {
+    async init() {
         if (!this.model) {
             console.time(`detector models load`)
-            this.model = new ModelWorker("8s-320")
+            this.model = await loadYoloV8(`./yolov8s-320_web_model/model.json`)
             console.timeEnd(`detector models load`)
         }
     }
     async detect(buffer, zone) {
         const croppedBuffer = await this.cutRegionFromBlob(buffer, zone)
-        const detections = await this.model.exec(croppedBuffer, zone)
+        const detections = await this.model.detect(croppedBuffer, zone)
         return detections
     }
     async cutRegionFromBlob(buffer, bbox) {

@@ -19,4 +19,7 @@ app.post('/detect', upload.fields([{name: "buffer"}, {name: "zone"}]), async (re
 		res.json({error})
 	}
 })
-app.listen(PORT, HOST, () => console.log(`Running on http://${HOST}:${PORT}`))
+app.listen(PORT, HOST, async () => {
+	await detector.init()
+	console.log(`Running on http://${HOST}:${PORT}`)
+})
