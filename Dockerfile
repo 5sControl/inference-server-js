@@ -4,4 +4,4 @@ COPY package.json .
 RUN npm i
 COPY . .
 EXPOSE 9999
-ENTRYPOINT ["node", "server.js"]
+ENTRYPOINT ["node", "src/main.js"]

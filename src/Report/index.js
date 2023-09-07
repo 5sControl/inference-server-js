@@ -50,7 +50,6 @@ const report = {
     },
     async prepare(snapshots, extra, camera_ip) {
         checkDirs([`images/${camera_ip}`])
-        console.log(snapshots, extra)
         for (const [i, snapshot] of snapshots.entries()) {
             await this.add(snapshot, isDanger = [1,2].includes(i), camera_ip)
         }

@@ -1,18 +1,18 @@
 {
-  "name": "nodejs-inference-server",
+  "name": "inference-server-js",
   "version": "0.2.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/main.js",
   "scripts": {
-    "test": "nodemon server.js"
+    "test": "export socket_server=ws://localhost:3000 && nodemon src/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2",
-    "multer": "^1.4.5-lts.1",
+    "@napi-rs/canvas": "^0.1.44",
     "@tensorflow/tfjs-node": "^4.10.0",
-    "@napi-rs/canvas": "^0.1.44"
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
   }
 }
