@@ -3,7 +3,8 @@ const tf = require('@tensorflow/tfjs-node')
 const labels = require("./labels")
 
 const MODELS = {
-    './yolov8m_web_model/model.json': labels
+    './yolov8s_web_model/model.json': labels
+    // './yolov8m_web_model/model.json': labels
 }
 
 class YOLOv8 {
@@ -51,7 +52,7 @@ class YOLOv8 {
      * @returns input tensor, xRatio and yRatio
      */
     detect = async (buffer) => {
-        console.time("detect")
+        // console.time("detect")
 
         const [modelWidth, modelHeight] = this.model.inputShape.slice(1, 3) // get model width and height
 
@@ -83,7 +84,7 @@ class YOLOv8 {
         tf.engine().endScope() // end of scoping
 
         const detections = this.postProcess(boxes_data, scores_data, classes_data) // collect detections
-        console.timeEnd("detect")
+        // console.timeEnd("detect")
         return detections
 
     }
