@@ -3,9 +3,8 @@ const httpServer = http.createServer()
 const { Server } = require("socket.io")
 const ws = new Server(httpServer)
 
-const detector = require('./Detector')
 const Translation = require('./Translation')
-const translation = new Translation(ws, detector)
+const translation = new Translation(ws)
 const report = require('./Report')
 
 
@@ -32,15 +31,13 @@ ws.on("connection", (socket) => {
         }
     })
     socket.on("disconnect", (reason) => {
-        translation.removeSubscriber(client.camera_ip)
+        translation.removeClient(client.camera_ip)
         console.log(reason, socket.id)
         console.log(ws.of("/").adapter.rooms)
-        console.log(ws.of("/").adapter.rooms.get(client.camera_ip))
     })
 });
 
 const PORT = 9999
 httpServer.listen(PORT, async () => {
-    await detector.init()
     console.log(`listening on *:${PORT}`)
 })

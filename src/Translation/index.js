@@ -1,41 +1,45 @@
 const onvifSocketURL = process.env.socket_server || `${process.env.server_url}:3456`
 const socketClient = require('socket.io-client')(onvifSocketURL)
 const Snapshot = require('./Snapshot.js')
+const CameraDetector = require("../Detector/CameraDetector.js")
 
 class Translation {
 
-    constructor(ws, detector) {
+    constructor(ws) {
         this.ws = ws
-        this.detector = detector
         socketClient.on("connect", async () => {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
         })
         socketClient.on("snapshot_updated", ({ camera_ip, screenshot }) => {
-            if (this.isCameraProcessed(camera_ip)) 
+            if (this.isCameraProcessed(camera_ip)) {
                 this.update(screenshot, camera_ip)
+            }
         })
     }
 
-    index = {}
+    cameras = {}
     addClient(client) {
         if (this.isCameraProcessed(client.camera_ip)) {
             console.log("camera is already being processed")
         } else {
             console.log("there is no such camera, add it")
-            this.index[client.camera_ip] = 0
+            this.cameras[client.camera_ip] = {
+                index: 0,
+                worker: new CameraDetector(client.camera_ip)
+            }
         }
         console.log('new algorithm subscribed: ', client)
-        console.log(this.index)
+        console.log(this.cameras)
     }
     isCameraProcessed(camera_ip) {
-        return this.index[camera_ip]!== undefined
+        return this.cameras[camera_ip] !== undefined
     }
     distribute(snapshot) {
         this.ws.to(snapshot.camera_ip).emit("snapshot detected", snapshot)
     }
-    removeSubscriber(camera_ip) {
+    removeClient(camera_ip) {
         if (!this.ws.of("/").adapter.rooms.get(camera_ip)) {
-            delete this.index[camera_ip]
+            delete this.cameras[camera_ip]
         }
         console.log("algorithm removed from subscribers")
     }
@@ -70,9 +74,9 @@ class Translation {
             if (checkedBuffer) {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
-                this.index[camera_ip]++
-                let snapshot = new Snapshot(camera_ip, this.index[camera_ip], checkedBuffer)
-                const detections = await this.detector.detect(snapshot, "person")
+                this.cameras[camera_ip].index++
+                let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
+                const detections = await this.cameras[camera_ip].worker.detect(snapshot.buffer)
                 snapshot.detections = detections
                 this.distribute(snapshot)
             }

@@ -14,5 +14,4 @@ class Detector {
     }
 }
 
-const detector = new Detector()
-module.exports = detector
+module.exports = Detector
