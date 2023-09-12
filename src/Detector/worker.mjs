@@ -8,7 +8,7 @@ parentPort.on('message', async (buffer) => {
     const start = new Date()
     const detections = await detector.detect(buffer, "person")
     const end = new Date()
-    const time = `${workerData.camera_ip}: ${end - start}ms`
+    const time = `⏱️  ${workerData.camera_ip}: ${end - start}ms`
     console.log(time)
     parentPort.postMessage(detections)
 })
