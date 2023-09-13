@@ -11,7 +11,6 @@ class Translation {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
         })
         socketClient.on("snapshot_updated", ({ camera_ip, screenshot }) => {
-            console.log("snapshot_updated", camera_ip)
             if (this.isCameraProcessed(camera_ip)) {
                 this.update(screenshot, camera_ip)
             }
@@ -70,7 +69,6 @@ class Translation {
         return buffer
     }
     async update(receivedBuffer, camera_ip) {
-        console.log("start update", camera_ip)
         try {
             const checkedBuffer = this.check(receivedBuffer)
             if (checkedBuffer) {

@@ -25,10 +25,10 @@ const report = {
         )
         return imagePath
     },
-    send(extra) {
+    send(extra, camera_ip) {
         const json = {
             "algorithm": "machine_control_js",
-            "camera": process.env.camera_ip,
+            "camera": camera_ip,
             "start_tracking": this.photos[0].date,
             "stop_tracking": this.photos[this.photos.length - 1].date,
             "photos": this.photos,
@@ -36,7 +36,7 @@ const report = {
             "extra": extra
         }
         const body = JSON.stringify(json, null, 2)
-        fetch(`${process.env.server_url}:80/api/reports/report-with-photos/`, {
+        fetch(`http://${process.env.server_url}:80/api/reports/report-with-photos/`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
             body
@@ -53,7 +53,7 @@ const report = {
         for (const [i, snapshot] of snapshots.entries()) {
             await this.add(snapshot, isDanger = [1,2].includes(i), camera_ip)
         }
-        this.send(extra)
+        this.send(extra, camera_ip)
     }
 }
 
