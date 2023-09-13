@@ -4,7 +4,7 @@
   "description": "",
   "main": "src/main.js",
   "scripts": {
-    "test": "export server_url=http://192.168.1.110 && export socket_server=ws://localhost:3000 && nodemon src/main.js"
+    "test": "export server_url=192.168.1.110 && export socket_server=ws://localhost:3000 && nodemon src/main.js"
   },
   "keywords": [],
   "author": "",
