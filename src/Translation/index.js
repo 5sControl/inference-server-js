@@ -1,8 +1,12 @@
 const onvifSocketURL = `http://${process.env.server_url}:3456` || process.env.socket_server
 const socketClient = require('socket.io-client')(onvifSocketURL)
 const Snapshot = require('./Snapshot.js')
-const CameraDetector = require("../Detector/CameraDetector.js")
 const {checkDirs} = require('../utils/Path')
+// const CameraDetector = require("../Detector/CameraDetector.js")
+const  Detector = require("../Detector")
+const detector = new Detector()
+detector.init()
+
 
 
 // const fs = require('fs')
@@ -31,7 +35,7 @@ class Translation {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
                 index: 0,
-                worker: new CameraDetector(client.camera_ip)
+                // worker: new CameraDetector(client.camera_ip)
             }
             checkDirs([`images/${client.camera_ip}`])
         }
@@ -83,7 +87,15 @@ class Translation {
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                let detected_snapshot = await this.cameras[camera_ip].worker.detect(snapshot)
+                // let detected_snapshot = await this.cameras[camera_ip].worker.detect(snapshot)
+
+                const start = new Date()
+                const detections = await detector.detect(snapshot.buffer, "person")
+                const end = new Date()
+                const time = `⏱️  ${snapshot.camera_ip}: ${end - start}ms`
+                console.log(time)            
+                snapshot.detections = detections
+                this.distribute(snapshot)
 
                 // detected_snapshot.zoneBbox = [ 280, 200, 1200, 800 ]
                 // let drawedBuffer = await new Drawer(detected_snapshot.buffer).draw_detections(detected_snapshot, false)
@@ -95,7 +107,6 @@ class Translation {
                 //     error => { if (error) console.log(error) }
                 // )
 
-                this.distribute(detected_snapshot)
             }
         } catch (error) {
             console.log("translation update error", error)
