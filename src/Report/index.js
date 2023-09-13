@@ -1,13 +1,13 @@
 const fs = require('fs')
 const crypto = require('crypto')
-const Drawer = require('./Drawer')
+const draw_detections = require('./Drawer_new.js')
 const {djangoDate} = require('../utils/Date')
 
 const report = {
     photos: [],
     async add(snapshot, isDanger, camera_ip) {
-        let drawedBuffer = await new Drawer(snapshot.buffer).draw_detections(snapshot, isDanger)
-        const imagePath = this.upload(drawedBuffer, camera_ip)
+        let drawed_snapshot = await draw_detections(snapshot, isDanger)
+        const imagePath = this.upload(drawed_snapshot.buffer, camera_ip)
         const photoRecord = {"image": imagePath, "date": djangoDate(new Date(snapshot.received))}
         this.photos.push(photoRecord)
     },

@@ -7,10 +7,10 @@ const Translation = require('./Translation')
 const translation = new Translation(ws)
 const report = require('./Report')
 
-var process = require('process')
-setInterval(() => {
-    console.log("📟 " + Math.floor(process.memoryUsage.rss()/1000000) + " MB")
-}, 1000)
+// var process = require('process')
+// setInterval(() => {
+//     console.log("📟 " + Math.floor(process.memoryUsage.rss()/1000000) + " MB")
+// }, 1000)
 
 ws.on("connection", (socket) => {
 

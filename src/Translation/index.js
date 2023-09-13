@@ -4,6 +4,11 @@ const Snapshot = require('./Snapshot.js')
 const CameraDetector = require("../Detector/CameraDetector.js")
 const {checkDirs} = require('../utils/Path')
 
+
+// const fs = require('fs')
+// const draw_detections = require('../Report/Drawer_new.js')
+
+
 class Translation {
 
     constructor(ws) {
@@ -79,6 +84,17 @@ class Translation {
                 this.cameras[camera_ip].index++
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
                 let detected_snapshot = await this.cameras[camera_ip].worker.detect(snapshot)
+
+                // detected_snapshot.zoneBbox = [ 280, 200, 1200, 800 ]
+                // let drawedBuffer = await new Drawer(detected_snapshot.buffer).draw_detections(detected_snapshot, false)
+
+                // let drawed_snapshot = await draw_detections(detected_snapshot, false)
+                // fs.writeFileSync(
+                //     `images/${detected_snapshot.camera_ip}/${detected_snapshot.index}.jpeg`,
+                //     drawed_snapshot.buffer,
+                //     error => { if (error) console.log(error) }
+                // )
+
                 this.distribute(detected_snapshot)
             }
         } catch (error) {
