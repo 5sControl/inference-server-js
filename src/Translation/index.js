@@ -2,6 +2,7 @@ const onvifSocketURL = `http://${process.env.server_url}:3456` || process.env.so
 const socketClient = require('socket.io-client')(onvifSocketURL)
 const Snapshot = require('./Snapshot.js')
 const CameraDetector = require("../Detector/CameraDetector.js")
+const {checkDirs} = require('../utils/Path')
 
 class Translation {
 
@@ -27,6 +28,7 @@ class Translation {
                 index: 0,
                 worker: new CameraDetector(client.camera_ip)
             }
+            checkDirs([`images/${client.camera_ip}`])
         }
         console.log('new algorithm subscribed: ', client)
         console.log(this.cameras)
@@ -76,9 +78,8 @@ class Translation {
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                const detections = await this.cameras[camera_ip].worker.detect(snapshot.buffer)
-                snapshot.detections = detections
-                this.distribute(snapshot)
+                let detected_snapshot = await this.cameras[camera_ip].worker.detect(snapshot)
+                this.distribute(detected_snapshot)
             }
         } catch (error) {
             console.log("translation update error", error)

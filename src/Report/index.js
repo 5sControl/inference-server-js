@@ -2,7 +2,6 @@ const fs = require('fs')
 const crypto = require('crypto')
 const Drawer = require('./Drawer')
 const {djangoDate} = require('../utils/Date')
-const {checkDirs} = require('../utils/Path')
 
 const report = {
     photos: [],
@@ -44,12 +43,10 @@ const report = {
         .then(r => r.text())
         .then(response => { console.log("server response", response) })
         .catch(err => { console.log("error report send", err.code) })
-        // dispatcher.emit("report sended", {message: `json: ${body}\n\n`})
         console.log("report sended", body)
         this.photos = []
     },
     async prepare(snapshots, extra, camera_ip) {
-        checkDirs([`images/${camera_ip}`])
         for (const [i, snapshot] of snapshots.entries()) {
             await this.add(snapshot, isDanger = [1,2].includes(i), camera_ip)
         }

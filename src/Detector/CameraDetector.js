@@ -6,10 +6,11 @@ class CameraDetector {
             workerData: {camera_ip}
         })
     }
-    async detect(buffer) {
-        this.worker.postMessage(buffer)
+    async detect(snapshot) {
+        this.worker.postMessage(snapshot.buffer)
         const detections = await new Promise(resolve => this.worker.once('message', message => resolve(message)))
-        return detections
+        snapshot.detections = detections
+        return snapshot
     }
     
 }
