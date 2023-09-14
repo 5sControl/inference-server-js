@@ -1,4 +1,4 @@
-const onvifSocketURL = `http://${process.env.server_url}:3456` || process.env.socket_server
+const onvifSocketURL = process.env.socket_server || `http://${process.env.server_url}:3456`
 const socketClient = require('socket.io-client')(onvifSocketURL)
 const Snapshot = require('./Snapshot.js')
 const {checkDirs} = require('../utils/Path')
