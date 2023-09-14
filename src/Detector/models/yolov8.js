@@ -3,7 +3,8 @@ const tf = require('@tensorflow/tfjs-node')
 const labels = require("./labels")
 
 const MODELS = {
-    './yolov8m-320_web_model/model.json': labels
+    './yolov8s_web_model/model.json': labels,
+    './yolov8m_web_model/model.json': labels
 }
 
 class YOLOv8 {
@@ -50,9 +51,8 @@ class YOLOv8 {
      * @param {Buffer} buffer
      * @returns input tensor, xRatio and yRatio
      */
-    detect = async (buffer, zone) => {
-        console.time("detect")
-        this.zone = zone
+    detect = async (buffer) => {
+        // console.time("detect")
 
         const [modelWidth, modelHeight] = this.model.inputShape.slice(1, 3) // get model width and height
 
@@ -75,7 +75,7 @@ class YOLOv8 {
             return [rawScores.max(1), rawScores.argMax(1)]
         })
     
-        const nms = await tf.image.nonMaxSuppressionAsync(boxes, scores, 500, 0.45, 0.5) // NMS to filter boxes
+        const nms = await tf.image.nonMaxSuppressionAsync(boxes, scores, 500, 0.45, 0.35) // NMS to filter boxes
         const boxes_data = boxes.gather(nms, 0).dataSync() // indexing boxes by nms index
         const scores_data = scores.gather(nms, 0).dataSync() // indexing scores by nms index
         const classes_data = classes.gather(nms, 0).dataSync() // indexing classes by nms index
@@ -84,7 +84,7 @@ class YOLOv8 {
         tf.engine().endScope() // end of scoping
 
         const detections = this.postProcess(boxes_data, scores_data, classes_data) // collect detections
-        console.timeEnd("detect")
+        // console.timeEnd("detect")
         return detections
 
     }
@@ -116,7 +116,7 @@ class YOLOv8 {
                 score: score,
                 classId: classes_data[i],
                 class: klass,
-                bbox: [x1 + this.zone[0], y1 + this.zone[1], width, height]
+                bbox: [x1, y1, width, height]
             })
         }
         return detections
