@@ -1,6 +1,6 @@
 const fs = require('fs')
 const crypto = require('crypto')
-const draw_detections = require('./Drawer_new.js')
+const draw_detections = require('./draw_detections.js')
 const {djangoDate} = require('../utils/Date')
 
 const report = {
