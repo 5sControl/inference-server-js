@@ -4,12 +4,11 @@ const draw_detections = require('./draw_detections.js')
 const {djangoDate} = require('../utils/Date')
 
 const report = {
-    photos: [],
     async add(snapshot, isDanger, camera_ip) {
         let drawed_snapshot = await draw_detections(snapshot, isDanger)
         const imagePath = this.upload(drawed_snapshot.buffer, camera_ip)
         const photoRecord = {"image": imagePath, "date": djangoDate(new Date(snapshot.received))}
-        this.photos.push(photoRecord)
+        return photoRecord
     },
     /**
      * @param {Buffer} buffer from Drawer
@@ -24,13 +23,13 @@ const report = {
         )
         return imagePath
     },
-    send(extra, camera_ip) {
+    send(photos_for_report, extra, camera_ip) {
         const json = {
             "algorithm": "machine_control_js",
             "camera": camera_ip,
-            "start_tracking": this.photos[0].date,
-            "stop_tracking": this.photos[this.photos.length - 1].date,
-            "photos": this.photos,
+            "start_tracking": photos_for_report[0].date,
+            "stop_tracking": photos_for_report[photos_for_report.length - 1].date,
+            "photos": photos_for_report,
             "violation_found": true,
             "extra": extra
         }
@@ -45,16 +44,23 @@ const report = {
         .then(response => { console.log("server response", response) })
         .catch(err => { console.log("error report send", err.code) })
 
-        if (this.photos.length !== 4) {
+        if (photos_for_report.length !== 4) {
             console.log("report sended", body)
         }
-        this.photos = []
     },
     async prepare(snapshots, extra, camera_ip) {
-        for (const [i, snapshot] of snapshots.entries()) {
-            await this.add(snapshot, isDanger = [1,2].includes(i), camera_ip)
+        if (snapshots.length !== 4) {
+            console.log("start prepare snapshots", snapshots, extra)
         }
-        this.send(extra, camera_ip)
+        let photos_for_report = []
+        for (const [i, snapshot] of snapshots.entries()) {
+            const record = await this.add(snapshot, isDanger = [1,2].includes(i), camera_ip)
+            photos_for_report.push(record)
+        }
+        if (photos_for_report.length !== 4) {                
+            console.log("photos_for_report incorrect size after preparing", photos_for_report)
+        }
+        this.send(photos_for_report, extra, camera_ip)
     }
     // dispatcher.on("machine: report", async ({snapshots_for_report}) => {
 
