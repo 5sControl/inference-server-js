@@ -6,6 +6,7 @@ class Snapshot {
         this.camera_ip = camera_ip
         this.time_index = time_index
         this.buffer = buffer
+        this.received = new Date()
         this.detections = []
     }
     async prepare() {
