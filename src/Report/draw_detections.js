@@ -21,8 +21,8 @@ function draw_box(ctx, rect, color, score) {
     ctx.strokeStyle = color
     ctx.strokeRect(x, y, width, height)
     if (score) {
-        ctx.font = "48px serif"
-        ctx.fillStyle = "orange"
+        ctx.font = "bold 48px sans"
+        ctx.fillStyle = "white"
         ctx.fillText(`${Math.floor(score * 100)}`, x - 20, y - 20)
     }
 }
