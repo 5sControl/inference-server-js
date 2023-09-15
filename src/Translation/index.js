@@ -81,11 +81,11 @@ class Translation {
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                const start = new Date()
+                // const start = new Date()
                 const detections = await detector.detect(snapshot.buffer, "person")
-                const end = new Date()
-                const time = `⏱️  ${snapshot.camera_ip}: ${end - start}ms`
-                console.log(time)            
+                // const end = new Date()
+                // const time = `⏱️  ${snapshot.camera_ip}: ${end - start}ms`
+                // console.log(time)            
                 snapshot.detections = detections
                 this.distribute(snapshot)
                 if (process.env.is_test) snapshot.save_to_debugDB()
