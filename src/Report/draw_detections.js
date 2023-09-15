@@ -8,7 +8,8 @@ async function draw_detections(snapshot, isDanger) {
     ctx.drawImage(image, 0, 0)
     draw_box(ctx, snapshot.zoneBbox, isDanger ? "red" : "green")
     for (const person of snapshot.detections) {
-        const color = person.isIntersect ? "yellow" : "aqua"
+        // const color = person.isIntersect ? "yellow" : "aqua"
+        const color = "aqua"
         draw_box(ctx, person.bbox, color)
     }
     snapshot.buffer = await canvas.encode('jpeg', 50)
