@@ -1,17 +1,22 @@
-const loadYoloV8 = require('./models/yolov8')
+const loadYoloNAS = require('./models/yolo-nas')
 
 class Detector {
-    async init() {
+
+    constructor() {
         if (!this.model) {
-            console.time(`detector models load`)
-            this.model = await loadYoloV8(`./yolov8s_web_model/model.json`)
-            console.timeEnd(`detector models load`)
+            console.time(`detector model load`)
+            loadYoloNAS().then(model => this.model = model)
+            console.timeEnd(`detector model load`)
         }
     }
-    async detect(buffer, filterLabel) {
+    async detect(buffer) {
+        console.time("detect")
         let detections = await this.model.detect(buffer)
-        return detections.filter(d => d.class === filterLabel)
+        console.timeEnd("detect")
+        detections = detections.filter(d => d.class === "person" && d.score > 0.2)
+        return detections
     }
+    
 }
 
 module.exports = Detector
