@@ -1,6 +1,7 @@
 const onvifSocketURL = process.env.socket_server || `http://${process.env.server_url}:3456`
 const socketClient = require('socket.io-client')(onvifSocketURL)
 const Snapshot = require('./Snapshot.js')
+const { create_time_index } = require("../utils/Date")
 const {checkDirs} = require('../utils/Path')
 const Detector = require("../Detector")
 const detector = new Detector()
@@ -21,13 +22,14 @@ class Translation {
     }
 
     cameras = {}
+    // cameras = {"0.0.0.0": {index: create_time_index()}}
     addClient(client) {
         if (this.isCameraProcessed(client.camera_ip)) {
             console.log("camera is already being processed")
         } else {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
-                index: 0
+                index: create_time_index()
             }
             checkDirs([`images/${client.camera_ip}`])
         }
@@ -86,6 +88,7 @@ class Translation {
                 console.log(time)            
                 snapshot.detections = detections
                 this.distribute(snapshot)
+                if (process.env.is_test) snapshot.save_to_debugDB()
             }
         } catch (error) {
             console.log("translation update error", error)

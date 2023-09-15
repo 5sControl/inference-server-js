@@ -1,3 +1,6 @@
+const {checkDirs} = require('./utils/Path')
+checkDirs([`debug`])
+
 const http = require('http')
 const httpServer = http.createServer()
 const { Server } = require("socket.io")
