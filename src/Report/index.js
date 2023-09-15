@@ -45,7 +45,9 @@ const report = {
         .then(response => { console.log("server response", response) })
         .catch(err => { console.log("error report send", err.code) })
 
-        console.log("report sended", body)
+        if (this.photos.length !== 4) {
+            console.log("report sended", body)
+        }
         this.photos = []
     },
     async prepare(snapshots, extra, camera_ip) {

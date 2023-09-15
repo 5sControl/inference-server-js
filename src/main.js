@@ -26,7 +26,9 @@ ws.on("connection", (socket) => {
 
     socket.on("send report", async ({snapshots, extra}, response) => {
         try {
-            console.log("get snapshots from mcjs", snapshots, extra)
+            if (snapshots.length !== 4) {                
+                console.log("get snapshots from mcjs", snapshots, extra)
+            }
             await report.prepare(
                 snapshots,
                 extra,
