@@ -3,6 +3,7 @@ const tf = require('@tensorflow/tfjs-node')
 const labels = require("./labels")
 
 const MODELS = {
+    './yolov8n_web_model/model.json': labels,
     './yolov8s_web_model/model.json': labels,
     './yolov8m_web_model/model.json': labels
 }
@@ -51,7 +52,7 @@ class YOLOv8 {
      * @param {Buffer} buffer
      * @returns input tensor, xRatio and yRatio
      */
-    detect = async (buffer) => {
+    detect = async (buffer, zone) => {
         console.time("detect")
 
         const [modelWidth, modelHeight] = this.model.inputShape.slice(1, 3) // get model width and height
@@ -75,7 +76,7 @@ class YOLOv8 {
             return [rawScores.max(1), rawScores.argMax(1)]
         })
     
-        const nms = await tf.image.nonMaxSuppressionAsync(boxes, scores, 500, 0.45, 0.2) // NMS to filter boxes
+        const nms = await tf.image.nonMaxSuppressionAsync(boxes, scores, 500, 0.45, 0.4) // NMS to filter boxes
         const boxes_data = boxes.gather(nms, 0).dataSync() // indexing boxes by nms index
         const scores_data = scores.gather(nms, 0).dataSync() // indexing scores by nms index
         const classes_data = classes.gather(nms, 0).dataSync() // indexing classes by nms index
@@ -83,13 +84,13 @@ class YOLOv8 {
         tf.dispose([output, transRes, boxes, scores, classes, nms]) // clear memory
         tf.engine().endScope() // end of scoping
 
-        const detections = this.postProcess(boxes_data, scores_data, classes_data) // collect detections
+        const detections = this.postProcess(boxes_data, scores_data, classes_data, zone) // collect detections
         console.timeEnd("detect")
         return detections
 
     }
 
-    postProcess = (boxes_data, scores_data, classes_data) => {
+    postProcess = (boxes_data, scores_data, classes_data, zone) => {
 
         let detections = []
         for (let i = 0; i < scores_data.length; ++i) {
@@ -108,6 +109,10 @@ class YOLOv8 {
             const width = x2 - x1
             const height = y2 - y1
 
+            if (zone) {
+                x1 = x1 + zone[0] - 20
+                y1 = y1 + zone[1] - 20
+            }
             detections.push({
                 x: x1,
                 y: y1,

@@ -6,16 +6,17 @@ async function draw_detections(snapshot, isDanger) {
     const image = new Image()
     image.src = snapshot.buffer
     ctx.drawImage(image, 0, 0)
+    console.log(snapshot)
     draw_box(ctx, snapshot.zoneBbox, isDanger ? "red" : "green")
     for (const person of snapshot.detections) {
         // const color = person.isIntersect ? "yellow" : "aqua"
         const color = "aqua"
-        draw_box(ctx, person.bbox, color, person.score)
+        draw_box(ctx, person.bbox, color, person.score, snapshot.detectedBy)
     }
     snapshot.buffer = await canvas.encode('jpeg', 50)
     return snapshot
 }
-function draw_box(ctx, rect, color, score) {
+function draw_box(ctx, rect, color, score, letter) {
     const [x, y, width, height] = rect
     ctx.lineWidth = 10
     ctx.strokeStyle = color
@@ -23,7 +24,7 @@ function draw_box(ctx, rect, color, score) {
     if (score) {
         ctx.font = "bold 48px sans"
         ctx.fillStyle = "yellow"
-        ctx.fillText(`m ${Math.floor(score * 100)}`, x - 20, y - 20)
+        ctx.fillText(`${letter} ${Math.floor(score * 100)}`, x - 20, y - 20)
     }
 }
 

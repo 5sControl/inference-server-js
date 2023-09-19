@@ -32,6 +32,16 @@ class Translation {
                 index: create_time_index()
             }
             checkDirs([`images/${client.camera_ip}`])
+            let is_valid_zones = true
+            for (const zone of client.zones) {
+                const [x,y, width, height] = zone
+                if (width > 640 && height > 640) {
+                    is_valid_zones = false
+                }
+            }
+            if (is_valid_zones) {
+                this.cameras[client.camera_ip].zones = client.zones
+            }
         }
         console.log('new algorithm subscribed: ', client)
         console.log(this.cameras)
@@ -81,12 +91,9 @@ class Translation {
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                // const start = new Date()
-                const detections = await detector.detect(snapshot.buffer, "person")
-                // const end = new Date()
-                // const time = `⏱️  ${snapshot.camera_ip}: ${end - start}ms`
-                // console.log(time)            
+                const detections = await detector.detect(snapshot.buffer, "person", this.cameras[camera_ip].zones)
                 snapshot.detections = detections
+                snapshot.detectedBy = this.cameras[camera_ip].zones ? "n" : "m"
                 this.distribute(snapshot)
                 if (process.env.is_test) snapshot.save_to_debugDB()
             }
