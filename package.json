@@ -12,8 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.44",
-    "ndarray": "^1.0.19",
-    "ndarray-ops": "^1.2.2",
+    "@techstark/opencv-js": "^4.8.0-release.4",
     "onnxruntime-node": "^1.15.1",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",

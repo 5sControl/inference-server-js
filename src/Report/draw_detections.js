@@ -10,20 +10,24 @@ async function draw_detections(snapshot, isDanger) {
     for (const person of snapshot.detections) {
         // const color = person.isIntersect ? "yellow" : "aqua"
         const color = "aqua"
-        draw_box(ctx, person.bbox, color, person.score)
+        draw_box(ctx, person.bbox, color, person.score, snapshot.detectedBy)
     }
     snapshot.buffer = await canvas.encode('jpeg', 50)
     return snapshot
 }
-function draw_box(ctx, rect, color, score) {
+function draw_box(ctx, rect, color, score, letter) {
     const [x, y, width, height] = rect
     ctx.lineWidth = 10
     ctx.strokeStyle = color
     ctx.strokeRect(x, y, width, height)
     if (score) {
-        ctx.font = "bold 48px sans"
+        ctx.fillStyle = "blue"
+        ctx.fillRect(x + 5, y + height/2 - 60, 80, 130)
         ctx.fillStyle = "yellow"
-        ctx.fillText(`${Math.floor(score * 100)}`, x - 20, y - 20)
+        ctx.font = "bold 30px sans"
+        ctx.fillText(`${letter}`, x + 20, y + height/2 - 20)
+        ctx.font = "bold 48px sans"
+        ctx.fillText(`${Math.floor(score * 100)}`, x + 20, y + height/2 + 40)
     }
 }
 

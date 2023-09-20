@@ -80,8 +80,9 @@ class Translation {
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                const detections = await detector.detect(snapshot.buffer, "person")
+                const detections = await detector.detect(snapshot.buffer)
                 snapshot.detections = detections
+                snapshot.detectedBy = "nas"
                 this.distribute(snapshot)
                 if (process.env.is_test) snapshot.save_to_debugDB()
             }
