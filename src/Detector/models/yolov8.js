@@ -33,8 +33,9 @@ class YOLOv8 {
             const img = tf.node.decodeImage(buffer)
             // padding image to square => [n, m] to [n, n], n > m
             const [h, w] = img.shape.slice(0, 2) // get source width and height
-            this.imageWidth = w
             const maxSize = Math.max(w, h) // get max size
+            this.xRatio = maxSize / w
+            this.yRatio = maxSize / h
             const imgPadded = img.pad([
                 [0, maxSize - h], // padding y [bottom only]
                 [0, maxSize - w], // padding x [right only]
@@ -102,27 +103,21 @@ class YOLOv8 {
         
             let [y1, x1, y2, x2] = boxes_data.slice(i * 4, (i + 1) * 4)
 
-            const ratio = this.imageWidth / this.model.inputShape[1]
-            x1 *= ratio
-            x2 *= ratio
-            y1 *= ratio
-            y2 *= ratio
+            x1 *= this.xRatio
+            x2 *= this.xRatio
+            y1 *= this.xRatio
+            y2 *= this.xRatio
+
             if (zone) {
-                // console.log(zone)
-                // console.log(x1, y1)
-                x1 = x1 + zone[0]
-                x2 = x2 + zone[0]
-                y1 = y1 + zone[1]
-                y2 = y2 + zone[1]
-                // console.log(x1, y1)
+                x1 = x1 + zone[0] - 20
+                x2 = x2 + zone[0] - 20
+                y1 = y1 + zone[1] - 20
+                y2 = y2 + zone[1] - 20
             }
+            
             const width = x2 - x1
             const height = y2 - y1
 
-            // if (zone) {
-            //     x1 = x1 + zone[0]
-            //     y1 = y1 + zone[1]
-            // }
             detections.push({
                 x: x1,
                 y: y1,

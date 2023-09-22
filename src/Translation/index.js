@@ -7,6 +7,10 @@ const Detector = require("../Detector")
 const detector = new Detector()
 detector.init()
 
+// const fs = require("fs")
+// const {createCanvas, Image} = require('@napi-rs/canvas')
+
+
 class Translation {
 
     constructor(ws) {
@@ -113,8 +117,31 @@ class Translation {
                 snapshot.detectedBy = this.cameras[camera_ip].zones ? "s" : "m"
                 // snapshot.detectedBy = "m"
 
+                // const canvas2 = createCanvas(1920, 1080)
+                // const ctx2 = canvas2.getContext('2d')
+                // const image2 = new Image()
+                // image2.src = snapshot.buffer
+                // ctx2.drawImage(image2, 0, 0, image2.width, image2.height)
+                // for (const detection of snapshot.detections) {
 
+                //     const color = "blue";
+                //     const score = (detection.score * 100).toFixed(1);
+                //     const [x, y, width, height] = detection.bbox;
+
+                //     ctx2.strokeStyle = color;
+                //     // ctx2.lineWidth = Math.max(Math.min(640, 360) / 200, 2.5);
+                //     ctx2.strokeRect(x, y, width, height);
+          
+                //     ctx2.font = "bold 24px sans"
+                //     ctx2.fillStyle = "blue"
+                //     ctx2.fillText(`${Math.floor(score)}`, x, y)
+          
+                // }
                 
+                // const drawed_buffer = await canvas2.encode('jpeg', 50)
+                // fs.writeFileSync(`timeline/${+snapshot.received}.jpeg`, drawed_buffer)
+            
+
                 this.distribute(snapshot)
                 if (process.env.is_test) snapshot.save_to_debugDB()
             }
