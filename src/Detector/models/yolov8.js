@@ -75,7 +75,7 @@ class YOLOv8 {
             return [rawScores.max(1), rawScores.argMax(1)]
         })
     
-        const nms = await tf.image.nonMaxSuppressionAsync(boxes, scores, 500, 0.45, 0.2) // NMS to filter boxes
+        const nms = await tf.image.nonMaxSuppressionAsync(boxes, scores, 500, 0.45, 0.3) // NMS to filter boxes
         const boxes_data = boxes.gather(nms, 0).dataSync() // indexing boxes by nms index
         const scores_data = scores.gather(nms, 0).dataSync() // indexing scores by nms index
         const classes_data = classes.gather(nms, 0).dataSync() // indexing classes by nms index
