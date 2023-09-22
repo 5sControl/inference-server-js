@@ -6,23 +6,20 @@ class Detector {
         if (!this.model) {
             console.time(`detector models load`)
             this.model = {
-                // n: await loadYoloV8(`./yolov8n_web_model/model.json`),
+                n: await loadYoloV8(`./yolov8n_web_model/model.json`),
                 m: await loadYoloV8(`./yolov8m_web_model/model.json`)
             }
             console.timeEnd(`detector models load`)
         }
     }
-    async detect(buffer, filterLabel) {
+    async detect(buffer, filterLabel, zone) {
         let detections = []
-        // if (zones) {
-            // for (const zone of zones) {
-            //     const cutted_buffer = await this.cutRegionFromBlob(buffer, zone)
-            //     const result = await this.model.n.detect(cutted_buffer, zone)
-            //     detections = detections.concat(result)
-            // }
-        // } else {
+        if (zone) {
+            const cutted_buffer = await this.cutRegionFromBlob(buffer, zone)
+            detections = await this.model.n.detect(cutted_buffer, zone)
+        } else {
             detections = await this.model.m.detect(buffer)
-        // }
+        }
         return detections.filter(d => d.class === filterLabel)
     }
     async cutRegionFromBlob(buffer, bbox) {

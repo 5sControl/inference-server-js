@@ -52,7 +52,7 @@ class YOLOv8 {
      * @param {Buffer} buffer
      * @returns input tensor, xRatio and yRatio
      */
-    detect = async (buffer) => {
+    detect = async (buffer, zone) => {
         console.time("detect")
 
         const [modelWidth, modelHeight] = this.model.inputShape.slice(1, 3) // get model width and height
@@ -84,7 +84,7 @@ class YOLOv8 {
         tf.dispose([output, transRes, boxes, scores, classes, nms]) // clear memory
         tf.engine().endScope() // end of scoping
 
-        const detections = this.postProcess(boxes_data, scores_data, classes_data) // collect detections
+        const detections = this.postProcess(boxes_data, scores_data, classes_data, zone) // collect detections
         console.timeEnd("detect")
         return detections
 
@@ -106,12 +106,21 @@ class YOLOv8 {
             x2 *= ratio
             y1 *= ratio
             y2 *= ratio
+            if (zone) {
+                // console.log(zone)
+                // console.log(x1, y1)
+                x1 = x1 + zone[0]
+                x2 = x2 + zone[0]
+                y1 = y1 + zone[1]
+                y2 = y2 + zone[1]
+                // console.log(x1, y1)
+            }
             const width = x2 - x1
             const height = y2 - y1
 
             // if (zone) {
-            //     x1 = x1 + zone[0] - 20
-            //     y1 = y1 + zone[1] - 20
+            //     x1 = x1 + zone[0]
+            //     y1 = y1 + zone[1]
             // }
             detections.push({
                 x: x1,
