@@ -110,7 +110,7 @@ class Translation {
 
                 snapshot.detections = detections
 
-                snapshot.detectedBy = this.cameras[camera_ip].zones ? "n" : "m"
+                snapshot.detectedBy = this.cameras[camera_ip].zones ? "s" : "m"
                 // snapshot.detectedBy = "m"
 
 
