@@ -1,7 +1,8 @@
 const path = require("path")
 
 const ort = require("onnxruntime-node")
-const cv = require("@techstark/opencv-js")
+// const cv = require("@techstark/opencv-js")
+const { cv, cvTranslateError } = require('opencv-wasm')
 const {Canvas, createCanvas, Image} = require('@napi-rs/canvas')
 const Configs = require("./utils/configs")
 const { PreProcessing, PostProcessing } = require("./utils/processing")

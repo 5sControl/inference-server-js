@@ -1,4 +1,5 @@
-const cv = require("@techstark/opencv-js")
+// const cv = require("@techstark/opencv-js")
+const { cv, cvTranslateError } = require('opencv-wasm')
 
 /**
  * Preprocessing class
