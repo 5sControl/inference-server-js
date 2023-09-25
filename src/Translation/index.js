@@ -7,8 +7,8 @@ const Detector = require("../Detector")
 const detector = new Detector()
 detector.init()
 
-// const fs = require("fs")
-// const {createCanvas, Image} = require('@napi-rs/canvas')
+const fs = require("fs")
+const {createCanvas, Image} = require('@napi-rs/canvas')
 
 
 class Translation {
@@ -104,11 +104,9 @@ class Translation {
                         promises.push(detector.detect(snapshot.buffer, "person", zone))
                     }
                     const result = await Promise.all(promises)
-                    // console.log("n", result.flat())
                     detections = result.flat()
                 } else {
                     const result = await detector.detect(snapshot.buffer, "person")
-                    // console.log("m", result)
                     detections = result
                 }
 
