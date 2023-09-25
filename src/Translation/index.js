@@ -7,8 +7,8 @@ const Detector = require("../Detector")
 const detector = new Detector()
 detector.init()
 
-const fs = require("fs")
-const {createCanvas, Image} = require('@napi-rs/canvas')
+// const fs = require("fs")
+// const {createCanvas, Image} = require('@napi-rs/canvas')
 
 
 class Translation {

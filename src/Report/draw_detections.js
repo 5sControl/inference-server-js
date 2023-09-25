@@ -8,11 +8,11 @@ async function draw_detections(snapshot, isDanger) {
     ctx.drawImage(image, 0, 0)
     console.log(snapshot)
     draw_box(ctx, snapshot.zoneBbox, isDanger ? "red" : "green")
-    for (const person of snapshot.detections) {
-        // const color = person.isIntersect ? "yellow" : "aqua"
-        const color = "aqua"
-        draw_box(ctx, person.bbox, color, person.score, snapshot.detectedBy)
-    }
+    // for (const person of snapshot.detections) {
+    //     // const color = person.isIntersect ? "yellow" : "aqua"
+    //     const color = "aqua"
+    //     draw_box(ctx, person.bbox, color, person.score, snapshot.detectedBy)
+    // }
     snapshot.buffer = await canvas.encode('jpeg', 50)
     return snapshot
 }
