@@ -32,17 +32,18 @@ class Translation {
         } else {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
-                index: create_time_index()
+                index: create_time_index(),
+                isDetect: true
             }
             checkDirs([`images/${client.camera_ip}`])
             let is_valid_zones = true
             for (const zone of client.zones) {
                 const [x,y, width, height] = zone
-                if (width > 640 || height > 640) {
+                // if (width > 640 && height > 640) {
+                if (width > 2000 && height > 2000) {
                     is_valid_zones = false
                 }
             }
-            console.log(is_valid_zones)
             if (is_valid_zones) {
                 this.cameras[client.camera_ip].zones = client.zones
             }
@@ -94,9 +95,15 @@ class Translation {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
+                
+                this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
+                
+                if (!this.cameras[camera_ip].isDetect) return
+
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
                 
                 let detections = []
+                console.time("detect")
                 if (this.cameras[camera_ip].zones) {
                     let promises = []
                     for (const zone of this.cameras[camera_ip].zones) {
@@ -108,6 +115,7 @@ class Translation {
                     const result = await this.detector.detect(snapshot.buffer, [0,0, 1920, 1080])
                     detections = result
                 }
+                console.timeEnd("detect")
                 snapshot.detections = detections
                 snapshot.detectedBy = this.cameras[camera_ip].zones ? "s" : "m"
 
@@ -116,24 +124,28 @@ class Translation {
                 // const image2 = new Image()
                 // image2.src = snapshot.buffer
                 // ctx2.drawImage(image2, 0, 0, image2.width, image2.height)
-                // for (const detection of snapshot.detections) {
+                
+                // if (this.cameras[camera_ip].zones) {
+                //     for (const zone of this.cameras[camera_ip].zones) {
+                //         ctx2.strokeStyle = "yellow";
+                //         const [x, y, width, height] = zone
+                //         ctx2.strokeRect(x, y, width, height)                                            
+                //     }
+                // }
 
+                // for (const detection of snapshot.detections) {
                 //     const color = "blue";
                 //     const score = (detection.score * 100).toFixed(1);
                 //     const [x, y, width, height] = detection.bbox;
-
                 //     ctx2.strokeStyle = color;
                 //     ctx2.strokeRect(x, y, width, height);
-          
                 //     ctx2.font = "bold 24px sans"
                 //     ctx2.fillStyle = "blue"
                 //     ctx2.fillText(`${Math.floor(score)}`, x, y)
-          
                 // }
                 
                 // const drawed_buffer = await canvas2.encode('jpeg', 50)
                 // fs.writeFileSync(`timeline/${+snapshot.received}.jpeg`, drawed_buffer)
-            
 
                 this.distribute(snapshot)
                 if (process.env.is_test) snapshot.save_to_debugDB()

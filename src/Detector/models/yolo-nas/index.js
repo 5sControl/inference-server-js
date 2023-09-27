@@ -12,7 +12,7 @@ class YOLO_NAS {
     arrBufNMS
     labels
     
-    scoreThreshold = 0.4
+    scoreThreshold = 0.3
     iouThreshold = 0.45
     topk = 100
     
@@ -22,7 +22,7 @@ class YOLO_NAS {
     async init() {
         const shape = +this.model_type.substring(2)
         this.inputShape = [1, 3, shape, shape]
-        this.session = await ort.InferenceSession.create(path.join(__dirname, `yolo_nas_${this.model_type}.onnx`))
+        this.session = await ort.InferenceSession.create(path.join(__dirname, `weights/yolo_nas_${this.model_type}.onnx`))
         this.arrBufNMS = await ort.InferenceSession.create(path.join(__dirname, "nms-yolo-nas.onnx"))
         this.labels = JSON.parse(fs.readFileSync(path.join(__dirname, "labels.json")))
         // warmup main model

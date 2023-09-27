@@ -22,12 +22,12 @@ function draw_box(ctx, rect, color, score, letter) {
     ctx.strokeRect(x, y, width, height)
     if (score) {
         ctx.fillStyle = "blue"
-        ctx.fillRect(x + 5, y - 30, 40, 30)
+        ctx.fillRect(x + 5, y - 30, 60, 30)
         ctx.fillStyle = "yellow"
         ctx.font = "bold 30px sans"
         // ctx.fillText(`${letter}`, x + 20, y + height/2 - 20)
         // ctx.font = "bold 48px sans"
-        ctx.fillText(`${Math.floor(score * 100)}`, x + 7, y - 5)
+        ctx.fillText(`l ${Math.floor(score * 100)}`, x + 7, y - 5)
     }
 }
 
