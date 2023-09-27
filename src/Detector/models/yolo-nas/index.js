@@ -12,7 +12,7 @@ class YOLO_NAS {
     arrBufNMS
     labels
     
-    scoreThreshold = 0.3
+    scoreThreshold = 0.4
     iouThreshold = 0.45
     topk = 100
     
