@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.44",
+    "canvas": "^2.11.2",
     "onnxruntime-node": "^1.15.1",
     "opencv-wasm": "^4.3.0-10",
     "socket.io": "^4.7.2",

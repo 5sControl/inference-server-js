@@ -1,4 +1,4 @@
-const {createCanvas, Image} = require('@napi-rs/canvas')
+const {createCanvas, Image} = require('canvas')
 
 async function draw_detections(snapshot, isDanger) {
     const canvas = createCanvas(1920, 1080)
@@ -12,7 +12,8 @@ async function draw_detections(snapshot, isDanger) {
         const color = "aqua"
         draw_box(ctx, person.bbox, color, person.score, snapshot.detectedBy)
     }
-    snapshot.buffer = await canvas.encode('jpeg', 50)
+    // snapshot.buffer = await canvas.encode('jpeg', 50)
+    snapshot.buffer = canvas.toBuffer('image/jpeg', { quality: 0.5 })
     return snapshot
 }
 function draw_box(ctx, rect, color, score, letter) {

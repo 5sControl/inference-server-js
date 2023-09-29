@@ -1,9 +1,8 @@
 const path = require("path")
 
 const ort = require("onnxruntime-node")
-// const cv = require("@techstark/opencv-js")
-const { cv, cvTranslateError } = require('opencv-wasm')
-const {Canvas, createCanvas, Image} = require('@napi-rs/canvas')
+const { cv } = require('opencv-wasm')
+const {Canvas, createCanvas, Image} = require('canvas')
 const Configs = require("./utils/configs")
 const { PreProcessing, PostProcessing } = require("./utils/processing")
 const configs = new Configs([1, 3, 640, 640], 0.3, 0.45, 100)
@@ -102,7 +101,6 @@ class YOLO_NAS {
             })
         }
 
-            
         input.delete()
         img.delete()
 
