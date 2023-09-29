@@ -104,6 +104,8 @@ class YOLO_NAS {
 
             
         input.delete()
+        img.delete()
+
         const filtered_boxes = boxes.filter(b => b.label === 0)
 
         let detections = []
