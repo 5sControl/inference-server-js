@@ -88,7 +88,6 @@ class Translation {
                 const detections = await detector.detect(snapshot.buffer)
                 snapshot.detections = detections
                 snapshot.detectedBy = "nas"
-
                 if (["0.0.0.0", "10.20.100.40"].includes(camera_ip)) {
                     const canvas2 = createCanvas(1920, 1080)
                     const ctx2 = canvas2.getContext('2d')
@@ -109,12 +108,14 @@ class Translation {
                         ctx2.fillText(`${Math.floor(score)}`, x + 7, y - 5)
                     }
                     const drawed_buffer = canvas2.toBuffer('image/jpeg', { quality: 0.5 })
-                    fs.writeFileSync(`debug/timeline/${this.timeline_index}.jpeg`, drawed_buffer)
+                    // fs.writeFileSync(`debug/timeline/${this.timeline_index}.jpeg`, drawed_buffer)
+                    fs.writeFileSync(`images/timeline/${this.timeline_index}.jpeg`, drawed_buffer)
+                    console.log("saved detected snapshot: " + this.timeline_index)
                     this.timeline_index = this.timeline_index > 1000 ? 1 : this.timeline_index + 1
                 }
 
                 this.distribute(snapshot)
-                if (process.env.is_test) snapshot.save_to_debugDB()
+                // if (process.env.is_test) snapshot.save_to_debugDB()
             }
         } catch (error) {
             console.log("translation update error", error)

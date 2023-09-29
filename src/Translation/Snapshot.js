@@ -1,5 +1,5 @@
 const compress_buffer = require("./compress_buffer")
-const db = require("../debugDB")
+// const db = require("../debugDB")
 
 class Snapshot {
     constructor(camera_ip, time_index, buffer) {
