@@ -1,5 +1,5 @@
 const {checkDirs} = require('./utils/Path')
-checkDirs([`debug`])
+checkDirs([`debug`, `debug/timeline`])
 
 const http = require('http')
 const httpServer = http.createServer()
