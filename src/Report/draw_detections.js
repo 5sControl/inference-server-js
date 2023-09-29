@@ -27,7 +27,7 @@ function draw_box(ctx, rect, color, score, letter) {
         ctx.font = "bold 30px sans"
         // ctx.fillText(`${letter}`, x + 20, y + height/2 - 20)
         // ctx.font = "bold 48px sans"
-        ctx.fillText(`l ${Math.floor(score * 100)}`, x + 7, y - 5)
+        ctx.fillText(`s ${Math.floor(score * 100)}`, x + 7, y - 5)
     }
 }
 

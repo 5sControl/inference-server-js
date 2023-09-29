@@ -7,7 +7,7 @@ class Detector {
         if (!this.model) {
             console.time(`detector model load`)
             this.model = {
-                for_zone: await loadYoloNAS("l_320"),
+                for_zone: await loadYoloNAS("s_320"),
                 // for_snapshot: await loadYoloNAS("l_320")
             }
             console.timeEnd(`detector model load`)
