@@ -110,3 +110,4 @@ images
 videos
 debug
 .idea/
+src/Detector/models/yolo-nas/weights
