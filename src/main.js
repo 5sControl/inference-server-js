@@ -1,7 +1,3 @@
-const {checkDirs} = require('./utils/Path')
-// checkDirs([`debug/timeline`])
-checkDirs([`images/timeline`])
-
 const http = require('http')
 const httpServer = http.createServer()
 const { Server } = require("socket.io")
