@@ -8,11 +8,9 @@ async function draw_detections(snapshot, isDanger) {
     ctx.drawImage(image, 0, 0)
     draw_box(ctx, snapshot.zoneBbox, isDanger ? "red" : "green")
     for (const person of snapshot.detections) {
-        // const color = person.isIntersect ? "yellow" : "aqua"
         const color = "aqua"
         draw_box(ctx, person.bbox, color, person.score, snapshot.detectedBy)
     }
-    // snapshot.buffer = await canvas.encode('jpeg', 50)
     snapshot.buffer = canvas.toBuffer('image/jpeg', { quality: 0.5 })
     return snapshot
 }
@@ -26,9 +24,7 @@ function draw_box(ctx, rect, color, score, letter) {
         ctx.fillRect(x + 5, y - 30, 40, 30)
         ctx.fillStyle = "yellow"
         ctx.font = "bold 30px sans"
-        // ctx.fillText(`${letter}`, x + 20, y + height/2 - 20)
-        // ctx.font = "bold 48px sans"
-        ctx.fillText(`${Math.floor(score * 100)}`, x + 7, y - 5)
+        ctx.fillText(`${letter}${Math.floor(score * 100)}`, x + 7, y - 5)
     }
 }
 

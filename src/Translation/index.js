@@ -6,10 +6,6 @@ const {checkDirs} = require('../utils/Path')
 const Detector = require("../Detector")
 const detector = new Detector()
 
-
-const fs = require("fs")
-const {createCanvas, Image} = require('canvas')
-
 class Translation {
 
     constructor(ws) {
@@ -26,14 +22,14 @@ class Translation {
     }
 
     cameras = {}
-    // cameras = {"0.0.0.0": {index: create_time_index()}}
     addClient(client) {
         if (this.isCameraProcessed(client.camera_ip)) {
             console.log("camera is already being processed")
         } else {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
-                index: create_time_index()
+                index: create_time_index(),
+                isDetect: true
             }
             checkDirs([`images/${client.camera_ip}`])
         }
@@ -84,37 +80,12 @@ class Translation {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
+                this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
+                if (!this.cameras[camera_ip].isDetect) return
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
                 const detections = await detector.detect(snapshot.buffer)
                 snapshot.detections = detections
-                snapshot.detectedBy = "nas"
-                
-                // if (["0.0.0.0", "10.20.100.40"].includes(camera_ip)) {
-                //     const canvas2 = createCanvas(1920, 1080)
-                //     const ctx2 = canvas2.getContext('2d')
-                //     const image2 = new Image()
-                //     image2.src = snapshot.buffer
-                //     ctx2.drawImage(image2, 0, 0, image2.width, image2.height)
-                //     ctx2.lineWidth = 10
-                //     for (const detection of snapshot.detections) {
-                //         const color = "yellow";
-                //         const score = (detection.score * 100).toFixed(1);
-                //         const [x, y, width, height] = detection.bbox
-                //         ctx2.strokeStyle = color
-                //         ctx2.strokeRect(x, y, width, height)
-                //         ctx2.fillStyle = "blue"
-                //         ctx2.fillRect(x + 5, y - 30, 40, 30)
-                //         ctx2.fillStyle = "yellow"
-                //         ctx2.font = "bold 30px sans"
-                //         ctx2.fillText(`${Math.floor(score)}`, x + 7, y - 5)
-                //     }
-                //     const drawed_buffer = canvas2.toBuffer('image/jpeg', { quality: 0.5 })
-                //     // fs.writeFileSync(`debug/timeline/${this.timeline_index}.jpeg`, drawed_buffer)
-                //     fs.writeFileSync(`images/timeline/${this.timeline_index}.jpeg`, drawed_buffer)
-                //     console.log("saved detected snapshot: " + this.timeline_index)
-                //     this.timeline_index = this.timeline_index > 1000 ? 1 : this.timeline_index + 1
-                // }
-
+                snapshot.detectedBy = "m"
                 this.distribute(snapshot)
                 // if (process.env.is_test) snapshot.save_to_debugDB()
             }

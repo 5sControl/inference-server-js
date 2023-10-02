@@ -29,7 +29,7 @@ class YOLO_NAS {
             configs.labels
         )
 
-        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, "yolo_nas_s.onnx"))
+        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, "weights/yolo_nas_m.onnx"))
         const nms = await ort.InferenceSession.create(path.join(__dirname, "nms-yolo-nas.onnx"))
     
         const tensor = new ort.Tensor(
@@ -118,26 +118,6 @@ class YOLO_NAS {
                 bbox
             })
         }
-    
-        // const canvas2 = createCanvas(1920, 1080)
-        // const ctx2 = canvas2.getContext('2d')
-        // const image2 = new Image()
-        // image2.src = buffer
-        // ctx2.drawImage(image2, 0, 0)
-
-        // detections.forEach((box) => {
-        //     const color = "blue";
-        //     const score = (box.score * 100).toFixed(1);
-        //     const [x, y, width, height] = box.bbox;
-        //     ctx2.strokeStyle = color;
-        //     ctx2.lineWidth = Math.max(Math.min(640, 360) / 200, 2.5);
-        //     ctx2.strokeRect(x, y, width, height);
-  
-        // })
-        // const drawed_buffer = await canvas2.encode('jpeg', 50)
-        // fs.writeFileSync("out.jpeg", drawed_buffer)
-
-        // console.log(detections)
         return detections
     }
 
