@@ -16,14 +16,15 @@ ws.on("connection", (socket) => {
 
     const client = {
         id: socket.id,
-        camera_ip: socket.request._query.camera_ip
+        camera_ip: socket.request._query.camera_ip,
+        zones: JSON.parse(socket.request._query.zones)
     }
     socket.join(client.camera_ip)
     translation.addClient(client)
 
     socket.on("send report", async ({snapshots, extra}, response) => {
         try {
-            if (snapshots.length !== 4) {                
+            if (snapshots.length !== 4) {
                 console.log("get snapshots from mcjs", snapshots, extra)
             }
             await report.prepare(

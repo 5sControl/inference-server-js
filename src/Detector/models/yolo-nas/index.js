@@ -5,48 +5,49 @@ const { cv } = require('opencv-wasm')
 const {Canvas, createCanvas, Image} = require('canvas')
 const Configs = require("./utils/configs")
 const { PreProcessing, PostProcessing } = require("./utils/processing")
-const configs = new Configs([1, 3, 640, 640], 0.3, 0.45, 100)
 
 class YOLO_NAS {
     
     constructor() {}
-    async init() {
-
-        console.time("detector init")
+    async init(model_type) {
+        console.time("model init")
         global.HTMLCanvasElement = Canvas
         global.HTMLImageElement = Image
         
-        await configs.init()
-        const prep = new PreProcessing(configs.prepSteps, [
-            configs.inputShape[3],
-            configs.inputShape[2],
+        const shape = +model_type.substring(2)
+        this.configs = new Configs([1, 3, shape, shape], 0.3, 0.45, 100)
+
+        await this.configs.init()
+        const prep = new PreProcessing(this.configs.prepSteps, [
+            this.configs.inputShape[3],
+            this.configs.inputShape[2],
         ]);
         const postp = new PostProcessing(
-            configs.prepSteps,
-            configs.iouThresh,
-            configs.scoreThresh,
-            configs.topk,
-            configs.labels
+            this.configs.prepSteps,
+            this.configs.iouThresh,
+            this.configs.scoreThresh,
+            this.configs.topk,
+            this.configs.labels
         )
 
-        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, "weights/yolo_nas_m.onnx"))
+        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname,  `weights/yolo_nas_${model_type}.onnx`))
         const nms = await ort.InferenceSession.create(path.join(__dirname, "nms-yolo-nas.onnx"))
-    
+
         const tensor = new ort.Tensor(
             "float32",
-            new Float32Array(configs.inputShape.reduce((a, b) => a * b)),
-            configs.inputShape
+            new Float32Array(this.configs.inputShape.reduce((a, b) => a * b)),
+            this.configs.inputShape
         )
         await yoloNAS.run({ "input.1": tensor })
       
-        this.session = { net: yoloNAS, inputShape: configs.inputShape, nms: nms }
+        this.session = { net: yoloNAS, inputShape: this.configs.inputShape, nms: nms }
         this.processing = { preProcessing: prep, postProcessing: postp }
         
-        console.timeEnd("detector init")
+        console.timeEnd("model init")
 
     }
 
-    async detect(buffer) {
+    async detect(buffer, zone) {
     
         const canvas = createCanvas(640, 360)
         const ctx = canvas.getContext('2d')
@@ -55,9 +56,9 @@ class YOLO_NAS {
         ctx.drawImage(image, 0, 0, image.width/3, image.height/3)
     
         const img = cv.imread(canvas)
-        const prep = new PreProcessing(configs.prepSteps, [
-            configs.inputShape[3],
-            configs.inputShape[2],
+        const prep = new PreProcessing(this.configs.prepSteps, [
+            this.configs.inputShape[3],
+            this.configs.inputShape[2],
         ]);
 
         const [input, metadata] = prep.run(img)
@@ -65,11 +66,11 @@ class YOLO_NAS {
         const tensor = new ort.Tensor("float32", input.data32F, this.session.inputShape)
 
         const postp = new PostProcessing(
-            configs.prepSteps,
-            configs.iouThresh,
-            configs.scoreThresh,
-            configs.topk,
-            configs.labels
+            this.configs.prepSteps,
+            this.configs.iouThresh,
+            this.configs.scoreThresh,
+            this.configs.topk,
+            this.configs.labels
         )
 
         const config = new ort.Tensor("float32",
@@ -108,14 +109,16 @@ class YOLO_NAS {
 
         let detections = []
         for (const {score, bbox} of filtered_boxes) {
+            const [x, y, width, height] = bbox
+            const new_bbox = [x + zone[0], y + zone[1], width, height]
             detections.push({
-                x: bbox[0],
-                y: bbox[1],
-                width: bbox[2],
-                height: bbox[3],
+                x: new_bbox[0],
+                y: new_bbox[1],
+                width: new_bbox[2],
+                height: new_bbox[3],
                 score,
                 class: "person",
-                bbox
+                bbox: new_bbox
             })
         }
         return detections
@@ -123,9 +126,9 @@ class YOLO_NAS {
 
 }
 
-async function loadYoloNAS() {
+async function loadYoloNAS(model_type) {
     const model = new YOLO_NAS()
-    await model.init()
+    await model.init(model_type)
     return model
 }
 

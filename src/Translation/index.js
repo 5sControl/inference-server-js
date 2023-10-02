@@ -11,6 +11,7 @@ class Translation {
     constructor(ws) {
         this.timeline_index = 1
         this.ws = ws
+        detector.init()
         socketClient.on("connect", async () => {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
         })
@@ -29,9 +30,11 @@ class Translation {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
                 index: create_time_index(),
-                isDetect: true
+                zones: client.zones
             }
             checkDirs([`images/${client.camera_ip}`])
+            const detectWeights = this.cameras[client.camera_ip].zones.length > 1 ? "light" : "hard"
+            this.cameras[client.camera_ip].detectWeights = detectWeights
         }
         console.log('new algorithm subscribed: ', client)
         console.log(this.cameras)
@@ -80,12 +83,25 @@ class Translation {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
-                this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
-                if (!this.cameras[camera_ip].isDetect) return
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                const detections = await detector.detect(snapshot.buffer)
+
+                let detections = []
+                const detectWeights = this.cameras[camera_ip].detectWeights
+                console.time("detect")
+                if (detectWeights === "light") {
+                    let promises = []
+                    for (const zone of this.cameras[camera_ip].zones) {
+                        promises.push(detector.detect(snapshot.buffer, zone, "light"))
+                    }
+                    const result = await Promise.all(promises)
+                    detections = result.flat()
+                } else if (detectWeights === "hard") {
+                    const result = await detector.detect(snapshot.buffer, this.cameras[camera_ip].zones[0], "hard")
+                    detections = result
+                }
+                console.timeEnd("detect")
                 snapshot.detections = detections
-                snapshot.detectedBy = "m"
+                // snapshot.detectedBy = "m"
                 this.distribute(snapshot)
                 // if (process.env.is_test) snapshot.save_to_debugDB()
             }
