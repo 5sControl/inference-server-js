@@ -29,7 +29,7 @@ class YOLO_NAS {
             configs.labels
         )
 
-        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, "weights/yolo_nas_m.onnx"))
+        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, "weights/yolo_nas_l.onnx"))
         const nms = await ort.InferenceSession.create(path.join(__dirname, "nms-yolo-nas.onnx"))
     
         const tensor = new ort.Tensor(
@@ -48,11 +48,11 @@ class YOLO_NAS {
 
     async detect(buffer) {
     
-        const canvas = createCanvas(640, 360)
+        const canvas = createCanvas(960, 590)
         const ctx = canvas.getContext('2d')
         const image = new Image()
         image.src = buffer
-        ctx.drawImage(image, 0, 0, image.width/3, image.height/3)
+        ctx.drawImage(image, 0, 0, image.width/2, image.height/2)
     
         const img = cv.imread(canvas)
         const prep = new PreProcessing(configs.prepSteps, [
@@ -93,7 +93,7 @@ class YOLO_NAS {
             const data = selected.data.slice(idx * selected.dims[2], (idx + 1) * selected.dims[2])
             const [box, score, label] = postp.run(data, [...metadata])
             let new_box = []
-            for (const n of box) new_box.push(n*3)
+            for (const n of box) new_box.push(n*2)
             boxes.push({
                 label,
                 score,
