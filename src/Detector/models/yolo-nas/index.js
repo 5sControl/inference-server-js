@@ -1,8 +1,8 @@
 const path = require("path")
 
 const ort = require("onnxruntime-node")
-const { cv } = require('opencv-wasm')
-const {Canvas, createCanvas, Image} = require('canvas')
+const { cv } = require("opencv-wasm")
+const {Canvas, createCanvas, Image} = require("canvas")
 const Configs = require("./utils/configs")
 const { PreProcessing, PostProcessing } = require("./utils/processing")
 const configs = new Configs([1, 3, 640, 640], 0.3, 0.45, 100)
@@ -10,7 +10,7 @@ const configs = new Configs([1, 3, 640, 640], 0.3, 0.45, 100)
 class YOLO_NAS {
     
     constructor() {}
-    async init() {
+    async init(model_weight) {
 
         console.time("detector init")
         global.HTMLCanvasElement = Canvas
@@ -29,7 +29,7 @@ class YOLO_NAS {
             configs.labels
         )
 
-        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, "weights/yolo_nas_l.onnx"))
+        const yoloNAS = await ort.InferenceSession.create(path.join(__dirname, `weights/yolo_nas_${model_weight}.onnx`))
         const nms = await ort.InferenceSession.create(path.join(__dirname, "nms-yolo-nas.onnx"))
     
         const tensor = new ort.Tensor(
@@ -49,10 +49,11 @@ class YOLO_NAS {
     async detect(buffer) {
     
         const canvas = createCanvas(960, 590)
-        const ctx = canvas.getContext('2d')
+        const coeff = 2
+        const ctx = canvas.getContext("2d")
         const image = new Image()
         image.src = buffer
-        ctx.drawImage(image, 0, 0, image.width/2, image.height/2)
+        ctx.drawImage(image, 0, 0, image.width/coeff, image.height/coeff)
     
         const img = cv.imread(canvas)
         const prep = new PreProcessing(configs.prepSteps, [
@@ -93,7 +94,7 @@ class YOLO_NAS {
             const data = selected.data.slice(idx * selected.dims[2], (idx + 1) * selected.dims[2])
             const [box, score, label] = postp.run(data, [...metadata])
             let new_box = []
-            for (const n of box) new_box.push(n*2)
+            for (const n of box) new_box.push(n*coeff)
             boxes.push({
                 label,
                 score,
@@ -105,7 +106,6 @@ class YOLO_NAS {
         img.delete()
 
         const filtered_boxes = boxes.filter(b => b.label === 0)
-
         let detections = []
         for (const {score, bbox} of filtered_boxes) {
             detections.push({
@@ -123,9 +123,9 @@ class YOLO_NAS {
 
 }
 
-async function loadYoloNAS() {
+async function loadYoloNAS(model_weight) {
     const model = new YOLO_NAS()
-    await model.init()
+    await model.init(model_weight)
     return model
 }
 

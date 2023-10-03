@@ -12,14 +12,14 @@ const report = require('./Report')
 //     console.log("📟 " + Math.floor(process.memoryUsage.rss()/1000000) + " MB")
 // }, 1000)
 
-ws.on("connection", (socket) => {
+ws.on("connection", async (socket) => {
 
     const client = {
         id: socket.id,
         camera_ip: socket.request._query.camera_ip
     }
     socket.join(client.camera_ip)
-    translation.addClient(client)
+    await translation.addClient(client)
 
     socket.on("send report", async ({snapshots, extra}, response) => {
         try {

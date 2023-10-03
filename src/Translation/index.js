@@ -1,10 +1,11 @@
 const onvifSocketURL = process.env.socket_server || `http://${process.env.server_url}:3456`
-const socketClient = require('socket.io-client')(onvifSocketURL)
-const Snapshot = require('./Snapshot.js')
+const socketClient = require("socket.io-client")(onvifSocketURL)
+const Snapshot = require("./Snapshot.js")
 const { create_time_index } = require("../utils/Date")
-const {checkDirs} = require('../utils/Path')
+const {checkDirs} = require("../utils/Path")
 const Detector = require("../Detector")
 const detector = new Detector()
+const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
 
 class Translation {
 
@@ -22,7 +23,7 @@ class Translation {
     }
 
     cameras = {}
-    addClient(client) {
+    async addClient(client) {
         if (this.isCameraProcessed(client.camera_ip)) {
             console.log("camera is already being processed")
         } else {
@@ -32,8 +33,11 @@ class Translation {
                 isDetect: true
             }
             checkDirs([`images/${client.camera_ip}`])
+            let model_weight = hardCameras.includes(client.camera_ip) ? "l" : "s"
+            this.cameras[client.camera_ip].model_weight = model_weight
+            await detector.checkModel(model_weight)
         }
-        console.log('new algorithm subscribed: ', client)
+        console.log("new algorithm subscribed: ", client)
         console.log(this.cameras)
     }
     isCameraProcessed(camera_ip) {
@@ -80,12 +84,19 @@ class Translation {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
-                this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
-                if (!this.cameras[camera_ip].isDetect) return
+                if (this.cameras[camera_ip].model_weight === "l") {                    
+                    this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
+                    if (!this.cameras[camera_ip].isDetect) return
+                }
                 let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                const detections = await detector.detect(snapshot.buffer)
+                const start = Date.now()
+                const detections = await detector.detect(this.cameras[camera_ip].model_weight, snapshot.buffer)
+                const finish = Date.now()
+                const detectedTime = finish - start
+                console.log(this.cameras[camera_ip].model_weight + "-model detect: " + detectedTime + " ms")
                 snapshot.detections = detections
-                snapshot.detectedBy = "m"
+                snapshot.detectedBy = this.cameras[camera_ip].model_weight
+                snapshot.detectedTime = detectedTime
                 this.distribute(snapshot)
                 // if (process.env.is_test) snapshot.save_to_debugDB()
             }

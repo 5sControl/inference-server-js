@@ -1,18 +1,18 @@
-const loadYoloNAS = require('./models/yolo-nas')
+const loadYoloNAS = require("./models/yolo-nas")
 
 class Detector {
 
-    constructor() {
-        if (!this.model) {
-            console.time(`detector model load`)
-            loadYoloNAS().then(model => this.model = model)
-            console.timeEnd(`detector model load`)
+    model = {}
+
+    async checkModel(model_weight) {
+        if (!this.model[model_weight]) {
+            console.time(`detector ${model_weight}-model load`)
+            this.model[model_weight] = await loadYoloNAS(model_weight)
+            console.timeEnd(`detector ${model_weight}-model load`)
         }
     }
-    async detect(buffer) {
-        console.time("detect")
-        let detections = await this.model.detect(buffer)
-        console.timeEnd("detect")
+    async detect(model_weight, buffer) {
+        let detections = await this.model[model_weight].detect(buffer)
         return detections
     }
     
