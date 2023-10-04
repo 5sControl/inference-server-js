@@ -39,8 +39,8 @@ function is_working_time() {
         return minutes
     }
 
-    const start_work_day = convert_time_to_minutes('09:00')
-    const finish_work_day = convert_time_to_minutes('10:00')
+    const start_work_day = convert_time_to_minutes('14:00')
+    const finish_work_day = convert_time_to_minutes('15:00')
 
     const date = new Date()
     const hour = (date.getHours() < 10 ? '0' : '' ) + date.getHours().toString()
