@@ -17,6 +17,7 @@ class Translation {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
         })
         socketClient.on("snapshot_updated", ({ camera_ip, screenshot }) => {
+            console.log("snapshot_updated: "+ camera_ip, screenshot)
             const received = new Date()
             if (this.isCameraProcessed(camera_ip)) {
                 this.update(screenshot, camera_ip, received)

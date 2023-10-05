@@ -7,6 +7,7 @@ const Translation = require('./Translation')
 const translation = new Translation(ws)
 const report = require('./Report')
 
+console.log("link_reports: " + process.env.link_reports)
 // var process = require('process')
 // setInterval(() => {
 //     console.log("📟 " + Math.floor(process.memoryUsage.rss()/1000000) + " MB")
