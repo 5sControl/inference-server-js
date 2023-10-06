@@ -1,13 +1,9 @@
-// -------------- Paths and dirs
 const {mkdirSync, existsSync} = require('fs')
 
 function checkDirs(dirs) {
     try {
         for (const dir of dirs) {
-            if (!existsSync(dir)) {
-                mkdirSync(dir, { recursive: true })
-                console.log("create folder: " + dir)
-            }
+            if (!existsSync(dir)) mkdirSync(dir, { recursive: true })
         }
         return true
     } catch (error) {

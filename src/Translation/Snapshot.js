@@ -22,7 +22,7 @@ class Snapshot {
             `insert INTO snapshots(camera_ip, time_index, received, buffer, detections, detectedBy, detectedTime) VALUES (?,?,?,?,?,?,?)`,
             [camera_ip, time_index.toString(), received, buffer, JSON.stringify(detections), detectedBy, detectedTime],
             (err) => { if (err) console.log(err.message) }
-        )    
+        )
     }
 }
 

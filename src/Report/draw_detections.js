@@ -14,7 +14,7 @@ async function draw_detections(snapshot, isDanger) {
     snapshot.buffer = canvas.toBuffer('image/jpeg', { quality: 0.5 })
     return snapshot
 }
-function draw_box(ctx, rect, color, score, letter) {
+function draw_box(ctx, rect, color, score) {
     const [x, y, width, height] = rect
     ctx.lineWidth = 10
     ctx.strokeStyle = color
