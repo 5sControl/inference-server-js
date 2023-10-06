@@ -101,7 +101,7 @@ class Translation {
                 snapshot.detectedBy = this.cameras[camera_ip].model_weight
                 snapshot.detectedTime = detectedTime
                 this.distribute(snapshot)
-                if (is_working_time() && recordedCameras.includes(camera_ip)) snapshot.save_to_debugDB()
+                // if (is_working_time() && recordedCameras.includes(camera_ip)) snapshot.save_to_debugDB()
             }
         } catch (error) {
             console.log("translation update error", error)
