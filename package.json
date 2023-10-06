@@ -1,12 +1,12 @@
 {
   "name": "inference-server-js",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "",
   "main": "src/main.js",
   "scripts": {
     "test": "export server_url=localhost && export socket_server=ws://localhost:3000 && export is_test=true && nodemon src/main.js",
     "test office": "export server_url=192.168.1.110 && nodemon src/main.js",
-    "publish": "sudo docker build -t 5scontrol/inference_server_js:v0.3.0 . --platform=linux/amd64 && sudo docker push 5scontrol/inference_server_js:v0.3.0"
+    "publish": "sudo docker build -t 5scontrol/inference_server_js:v0.4.0 . --platform=linux/amd64 && sudo docker push 5scontrol/inference_server_js:v0.4.0"
   },
   "keywords": [],
   "author": "",
