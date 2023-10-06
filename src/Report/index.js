@@ -25,7 +25,7 @@ const report = {
     },
     send(photos_for_report, extra, camera_ip) {
         const json = {
-            "algorithm": "machine_control_js",
+            "algorithm": process.env.algorithm_name || "machine_control_js",
             "camera": camera_ip,
             "start_tracking": photos_for_report[0].date,
             "stop_tracking": photos_for_report[photos_for_report.length - 1].date,
