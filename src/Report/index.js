@@ -35,7 +35,7 @@ const report = {
         }
         const body = JSON.stringify(json, null, 2)
 
-        fetch(`http://${process.env.server_url}:80/api/reports/report-with-photos/`, {
+        fetch(process.env.link_reports, {
             method: "POST",
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
             body
@@ -62,22 +62,6 @@ const report = {
         }
         this.send(photos_for_report, extra, camera_ip)
     }
-    // dispatcher.on("machine: report", async ({snapshots_for_report}) => {
-
-        // debugBD.report(report)
-
-    //     let cleaned_snapshots = []
-    //     for (const snapshot of snapshots_for_report) {
-    //         const {received, index} = snapshot
-    //         cleaned_snapshots.push({received, index})
-    //     }
-    
-    //     const record = {
-    //         control_name: "machine",
-    //         snapshots: cleaned_snapshots
-    //     }
-    //     db.insert("reports", record)
-    // })
 }
 
 module.exports = report

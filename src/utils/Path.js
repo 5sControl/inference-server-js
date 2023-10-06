@@ -1,4 +1,3 @@
-// -------------- Paths and dirs
 const {mkdirSync, existsSync} = require('fs')
 
 function checkDirs(dirs) {

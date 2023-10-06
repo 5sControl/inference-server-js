@@ -1,39 +1,46 @@
 const onvifSocketURL = process.env.socket_server || `http://${process.env.server_url}:3456`
-const socketClient = require('socket.io-client')(onvifSocketURL)
-const Snapshot = require('./Snapshot.js')
-const { create_time_index } = require("../utils/Date")
-const {checkDirs} = require('../utils/Path')
+const socketClient = require("socket.io-client")(onvifSocketURL)
+const Snapshot = require("./Snapshot.js")
+const { create_time_index, is_working_time } = require("../utils/Date")
+const {checkDirs} = require("../utils/Path")
 const Detector = require("../Detector")
 const detector = new Detector()
-detector.init()
+const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
+const recordedCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.42", "10.20.100.43"]
 
 class Translation {
 
     constructor(ws) {
+        this.timeline_index = 1
         this.ws = ws
         socketClient.on("connect", async () => {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
         })
         socketClient.on("snapshot_updated", ({ camera_ip, screenshot }) => {
+            console.log("snapshot_updated: "+ camera_ip, screenshot)
+            const received = new Date()
             if (this.isCameraProcessed(camera_ip)) {
-                this.update(screenshot, camera_ip)
+                this.update(screenshot, camera_ip, received)
             }
         })
     }
 
     cameras = {}
-    // cameras = {"0.0.0.0": {index: create_time_index()}}
-    addClient(client) {
+    async addClient(client) {
         if (this.isCameraProcessed(client.camera_ip)) {
             console.log("camera is already being processed")
         } else {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
-                index: create_time_index()
+                index: create_time_index(),
+                isDetect: true
             }
             checkDirs([`images/${client.camera_ip}`])
+            let model_weight = hardCameras.includes(client.camera_ip) ? "l" : "s"
+            this.cameras[client.camera_ip].model_weight = model_weight
+            await detector.checkModel(model_weight)
         }
-        console.log('new algorithm subscribed: ', client)
+        console.log("new algorithm subscribed: ", client)
         console.log(this.cameras)
     }
     isCameraProcessed(camera_ip) {
@@ -73,22 +80,28 @@ class Translation {
         }
         return buffer
     }
-    async update(receivedBuffer, camera_ip) {
+    async update(receivedBuffer, camera_ip, received) {
         try {
             const checkedBuffer = this.check(receivedBuffer)
             if (checkedBuffer) {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
                 this.cameras[camera_ip].index++
-                let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer)
-                // const start = new Date()
-                const detections = await detector.detect(snapshot.buffer, "person")
-                // const end = new Date()
-                // const time = `⏱️  ${snapshot.camera_ip}: ${end - start}ms`
-                // console.log(time)            
+                if (this.cameras[camera_ip].model_weight === "l") {                    
+                    this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
+                    if (!this.cameras[camera_ip].isDetect) return
+                }
+                let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer, received)
+                const start = Date.now()
+                const detections = await detector.detect(this.cameras[camera_ip].model_weight, snapshot.buffer)
+                const finish = Date.now()
+                const detectedTime = finish - start
+                console.log(this.cameras[camera_ip].model_weight + "-model detect: " + detectedTime + " ms")
                 snapshot.detections = detections
+                snapshot.detectedBy = this.cameras[camera_ip].model_weight
+                snapshot.detectedTime = detectedTime
                 this.distribute(snapshot)
-                if (process.env.is_test) snapshot.save_to_debugDB()
+                // if (is_working_time() && recordedCameras.includes(camera_ip)) snapshot.save_to_debugDB()
             }
         } catch (error) {
             console.log("translation update error", error)

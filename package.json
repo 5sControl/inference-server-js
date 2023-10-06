@@ -1,19 +1,20 @@
 {
   "name": "inference-server-js",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "description": "",
   "main": "src/main.js",
   "scripts": {
     "test": "export server_url=localhost && export socket_server=ws://localhost:3000 && export is_test=true && nodemon src/main.js",
     "test office": "export server_url=192.168.1.110 && nodemon src/main.js",
-    "publish": "sudo docker build -t 5scontrol/inference_server_js:v0.3.0 . --platform=linux/amd64 && sudo docker push 5scontrol/inference_server_js:v0.3.0"
+    "publish": "sudo docker build -t 5scontrol/inference_server_js:v0.4.0 . --platform=linux/amd64 && sudo docker push 5scontrol/inference_server_js:v0.4.0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@napi-rs/canvas": "^0.1.44",
-    "@tensorflow/tfjs-node": "^4.10.0",
+    "canvas": "^2.11.2",
+    "onnxruntime-node": "^1.15.1",
+    "opencv-wasm": "^4.3.0-10",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2",
     "sqlite3": "^5.1.6"
