@@ -7,6 +7,7 @@ const Detector = require("../Detector")
 const detector = new Detector()
 const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
 const recordedCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.42", "10.20.100.43"]
+const {db} = require("../debugDB")
 
 class Translation {
 
@@ -101,7 +102,7 @@ class Translation {
                 snapshot.detectedBy = this.cameras[camera_ip].model_weight
                 snapshot.detectedTime = detectedTime
                 this.distribute(snapshot)
-                // if (is_working_time() && recordedCameras.includes(camera_ip)) snapshot.save_to_debugDB()
+                // if (is_working_time() && recordedCameras.includes(camera_ip)) db.save_to_debugDB(snapshot)
             }
         } catch (error) {
             console.log("translation update error", error)
