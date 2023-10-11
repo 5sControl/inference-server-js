@@ -4,7 +4,11 @@
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-**[5controlS](https://5controls.com/)** is an open source platform. Plug-in your ML-algorithms and get a ready-to-use software for manufacturing monitoring.
+**[5controlS](https://5controls.com/)** is an open source AI-powered manufacturing operations platform that helps companies improve productivity, eliminate waste, and enhance workplace safety using computer vision (CV) and machine learning (ML). 
+
+The platform generates detailed reports to provide insights on how processes can be optimized.
+
+Plug-in your ML-algorithms or some of the Official 5s algorithms and get a ready-to-use software for manufacturing monitoring.
 
 # **Project repositories**
 
@@ -31,7 +35,44 @@ The connections between the project repositories are illustrated by the followin
 5. [machine-control-js](https://github.com/5sControl/machine-control-js)
 
 **Algorithms Servers:**
-1. [inference-server-js]()
+1. [inference-server-js](https://github.com/5sControl/inference-server-js)
+
+
+# Inference Server API for algorithm developer
+After starting the container, connect to the socket server via {process.env.server_url}:9999, after which a subscription is issued for an incoming event (”snapshot detected").
+
+The server receives the “send report” event from the client in the form of an array of snapshots (Snapshots[]).
+
+Example of implementing a socket client in JS:
+
+```js
+const io = require('socket.io-client')
+
+/* >-----------------------------------------------------------------------------------------------> **/
+// subscription
+
+    const socket = io(`${process.env.server_url}:9999`, {
+        query: {
+            camera_ip: process.env.camera_ip
+        }
+    })
+    socket.on("connect", () => console.log(`Your algorithm is subscribed to the inference server`))
+    socket.on("disconnect", () => console.log(`Your algorithm is unsubscribed to the inference server`))
+
+/* <----------------------------------------------------------------------------------------------< **/
+// get detected snapshot
+
+    socket.on("snapshot detected", (snapshot) => console.log("get detected snapshot"))
+
+/* >----------------------------------------------------------------------------------------------> **/
+// send ready report
+
+    const violation_proof = [snapshot, snapshot, snapshot, snapshot]
+    socket.emit("send report", violation_proof, (response) => console.log(response.status))
+
+/* ------------------------------------------------------------------------------------------------- **/
+```
+
 
 # **Documentation**
 
@@ -72,40 +113,3 @@ We also have a list of [good first issues]() that will help you make your first 
     <img src="https://github.com/5sControl/Manufacturing-Automatization-Enterprise/blob/ebf176c81fdb62d81b2555cb6228adc074f60be0/assets/youtube%20(1).png" width="5%" alt="" /></a>
 </div>
 
-
-
-### Inference Server API для разработчика алгоритма
-
-После запуска контейнера подключиться к сокет-серверу через {process.env.server_url}:9999, после чего оформляется подписка на входящее событие (”snapshot detected”).
-
-От клиента сервер принимает событие “send report” в виде массива снепшотов (Snapshots[]).
-
-Пример реализации сокет-клиента на JS:
-
-```js
-const io = require('socket.io-client')
-
-/* >-----------------------------------------------------------------------------------------------> **/
-// subscription
-
-    const socket = io(`${process.env.server_url}:9999`, {
-        query: {
-            camera_ip: process.env.camera_ip
-        }
-    })
-    socket.on("connect", () => console.log(`Your algorithm is subscribed to the inference server`))
-    socket.on("disconnect", () => console.log(`Your algorithm is unsubscribed to the inference server`))
-
-/* <----------------------------------------------------------------------------------------------< **/
-// get detected snapshot
-
-    socket.on("snapshot detected", (snapshot) => console.log("get detected snapshot"))
-
-/* >----------------------------------------------------------------------------------------------> **/
-// send ready report
-
-    const violation_proof = [snapshot, snapshot, snapshot, snapshot]
-    socket.emit("send report", violation_proof, (response) => console.log(response.status))
-
-/* ------------------------------------------------------------------------------------------------- **/
-```
