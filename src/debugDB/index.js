@@ -1,5 +1,4 @@
 const sqlite3 = require("sqlite3").verbose()
-const recordedCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.42", "10.20.100.43"]
 const compress_buffer = require("./compress_buffer")
 
 function createDB(camera_ip) {
@@ -17,7 +16,7 @@ function createDB(camera_ip) {
 }
 
 let db = {}
-for (const camera_ip of recordedCameras) {
+for (const camera_ip of global.recordedCameras) {
 	db[camera_ip] = createDB(camera_ip)
 }
 

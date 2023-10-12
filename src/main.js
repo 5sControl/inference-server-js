@@ -7,6 +7,8 @@ const Translation = require('./Translation')
 const translation = new Translation(ws)
 const report = require('./Report')
 
+global.recordedCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.42", "10.20.100.43"]
+
 ws.on("connection", async (socket) => {
 
     const client = {
