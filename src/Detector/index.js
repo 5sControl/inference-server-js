@@ -11,9 +11,15 @@ class Detector {
             console.timeEnd(`detector ${model_weight}-model load`)
         }
     }
-    async detect(model_weight, buffer) {
-        let detections = await this.model[model_weight].detect(buffer)
-        return detections
+    async detect(model_weight, snapshot) {
+        const start = Date.now()
+        let detections = await this.model[model_weight].detect(snapshot.buffer)
+        const finish = Date.now()
+        const detected_time = finish - start
+        console.log(model_weight + "-model detect: " + detected_time + " ms")
+        snapshot.detections = detections
+        snapshot.detected_time = detected_time
+        return snapshot
     }
     
 }
