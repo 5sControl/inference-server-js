@@ -16,7 +16,6 @@ class Translation {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
         })
         socketClient.on("snapshot_updated", ({ camera_ip, screenshot }) => {
-            console.log("snapshot_updated: "+ camera_ip, screenshot)
             const received = new Date()
             if (this.isCameraProcessed(camera_ip)) {
                 this.update(screenshot, camera_ip, received)
@@ -45,8 +44,8 @@ class Translation {
     isCameraProcessed(camera_ip) {
         return this.cameras[camera_ip] !== undefined
     }
-    distribute(snapshot) {
-        this.ws.to(snapshot.camera_ip).emit("snapshot detected", snapshot)
+    distribute(camera_ip, snapshot) {
+        this.ws.to(camera_ip).emit("snapshot detected", snapshot)
     }
     removeClient(camera_ip) {
         if (!this.ws.of("/").adapter.rooms.get(camera_ip)) {
@@ -90,17 +89,16 @@ class Translation {
                     this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
                     if (!this.cameras[camera_ip].isDetect) return
                 }
-                let snapshot = new Snapshot(camera_ip, this.cameras[camera_ip].index, checkedBuffer, received)
+                let snapshot = new Snapshot(checkedBuffer, received)
                 const start = Date.now()
                 const detections = await detector.detect(this.cameras[camera_ip].model_weight, snapshot.buffer)
                 const finish = Date.now()
-                const detectedTime = finish - start
-                console.log(this.cameras[camera_ip].model_weight + "-model detect: " + detectedTime + " ms")
+                const detected_time = finish - start
+                console.log(this.cameras[camera_ip].model_weight + "-model detect: " + detected_time + " ms")
                 snapshot.detections = detections
-                snapshot.detectedBy = this.cameras[camera_ip].model_weight
-                snapshot.detectedTime = detectedTime
-                this.distribute(snapshot)
-                // if (is_working_time() && global.recordedCameras.includes(camera_ip)) db.save_to_debugDB(snapshot)
+                snapshot.detected_time = detected_time
+                this.distribute(camera_ip, snapshot)
+                // if (is_working_time() && global.recordedCameras.includes(camera_ip)) db.save_to_debugDB(snapshot, camera_ip)
             }
         } catch (error) {
             console.log("translation update error", error)
