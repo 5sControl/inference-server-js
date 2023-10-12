@@ -1,12 +1,12 @@
 const onvifSocketURL = process.env.socket_server || `http://${process.env.server_url}:3456`
 const socketClient = require("socket.io-client")(onvifSocketURL)
 const Snapshot = require("./Snapshot.js")
-const { create_time_index, is_working_time } = require("../utils/Date")
 const {checkDirs} = require("../utils/Path")
 const Detector = require("../Detector")
 const detector = new Detector()
 const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
-const {db} = require("../debugDB")
+// const { is_working_time } = require("../utils/Date")
+// const {db} = require("../debugDB")
 
 class Translation {
 
@@ -30,7 +30,6 @@ class Translation {
         } else {
             console.log("there is no such camera, add it")
             this.cameras[client.camera_ip] = {
-                index: create_time_index(),
                 isDetect: true
             }
             checkDirs([`images/${client.camera_ip}`])
@@ -84,7 +83,6 @@ class Translation {
             if (checkedBuffer) {
                 this.buffer.saveLastLength()
                 this.buffer.current = checkedBuffer
-                this.cameras[camera_ip].index++
                 if (this.cameras[camera_ip].model_weight === "l") {                    
                     this.cameras[camera_ip].isDetect = this.cameras[camera_ip].isDetect ? false : true
                     if (!this.cameras[camera_ip].isDetect) return

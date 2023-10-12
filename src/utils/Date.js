@@ -19,17 +19,6 @@ function djangoDate(date) {
 
     )
 }
-function create_time_index() {
-    const date = new Date()
-    const y = padTo2Digits(date.getFullYear()).substring(2, 4)
-    const m = padTo2Digits(date.getMonth() + 1)
-    const d = padTo2Digits(date.getDate())
-    const h = padTo2Digits(date.getHours())
-    const mn = padTo2Digits(date.getMinutes())
-    const s = padTo2Digits(date.getSeconds())
-    return +`${y}${m}${d}${h}${mn}${s}`
-}
-
 
 function is_working_time() {
 
@@ -50,4 +39,4 @@ function is_working_time() {
     return current_time > start_work_day && current_time < finish_work_day
 }
 
-module.exports = { djangoDate, create_time_index, is_working_time }
+module.exports = { djangoDate, is_working_time }
