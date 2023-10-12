@@ -11,7 +11,6 @@ const {db} = require("../debugDB")
 class Translation {
 
     constructor(ws) {
-        this.timeline_index = 1
         this.ws = ws
         socketClient.on("connect", async () => {
             console.log(`Connected to the onvif socket server: ${onvifSocketURL}`)
