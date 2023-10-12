@@ -9,6 +9,14 @@ function createDB(camera_ip) {
 		detections text,
 		detected_time integer
 	) `)
+	db.run(`CREATE TABLE IF NOT EXISTS screenshots (
+		received integer,
+		buffer blob
+	) `)
+	db.run(`CREATE TABLE IF NOT EXISTS camera_info (
+		detected_by text,
+		zones text
+	) `)
 	return db
 }
 
@@ -17,7 +25,14 @@ for (const camera_ip of global.recordedCameras) {
 	db[camera_ip] = createDB(camera_ip)
 }
 
-async function save_to_debugDB(snapshot, camera_ip) {
+async function save_camera_info(camera_ip, camera_info) {
+	db[camera_ip].run(
+		`insert INTO camera_info(detected_by, zones) VALUES (?,?)`,
+		[camera_info.detected_by, camera_info.zones],
+		(err) => { if (err) console.log(err.message) }
+	)
+}
+async function save_snapshot(snapshot, camera_ip) {
 	const compressed_buffer = await compress_buffer(snapshot.buffer)
 	snapshot.buffer = compressed_buffer
 	const {received, buffer, detections, detected_time} = snapshot
@@ -28,4 +43,4 @@ async function save_to_debugDB(snapshot, camera_ip) {
 	)
 }
 
-module.exports = {db, save_to_debugDB}
+module.exports = {db, save_camera_info, save_snapshot}

@@ -1,3 +1,5 @@
+global.recordedCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.42", "10.20.100.43"]
+
 const http = require('http')
 const httpServer = http.createServer()
 const { Server } = require("socket.io")
@@ -7,13 +9,12 @@ const Translation = require('./Translation')
 const translation = new Translation(ws)
 const report = require('./Report')
 
-global.recordedCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.42", "10.20.100.43"]
-
 ws.on("connection", async (socket) => {
 
     const client = {
         id: socket.id,
-        camera_ip: socket.request._query.camera_ip
+        camera_ip: socket.request._query.camera_ip,
+        zones: socket.request._query.zones
     }
     socket.join(client.camera_ip)
     await translation.addClient(client)

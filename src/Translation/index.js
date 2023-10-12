@@ -5,8 +5,8 @@ const {checkDirs} = require("../utils/Path")
 const Detector = require("../Detector")
 const detector = new Detector()
 const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
+const {db, save_camera_info} = require("../debugDB")
 // const { is_working_time } = require("../utils/Date")
-// const {db} = require("../debugDB")
 
 class Translation {
 
@@ -35,6 +35,11 @@ class Translation {
             checkDirs([`images/${client.camera_ip}`])
             let model_weight = hardCameras.includes(client.camera_ip) ? "l" : "s"
             this.cameras[client.camera_ip].model_weight = model_weight
+            const camera_info = {
+                detected_by: model_weight,
+                zones: client.zones
+            }
+            save_camera_info(client.camera_ip, camera_info)
             await detector.checkModel(model_weight)
         }
         console.log("new algorithm subscribed: ", client)
@@ -96,7 +101,7 @@ class Translation {
                 snapshot.detections = detections
                 snapshot.detected_time = detected_time
                 this.distribute(camera_ip, snapshot)
-                // if (is_working_time() && global.recordedCameras.includes(camera_ip)) db.save_to_debugDB(snapshot, camera_ip)
+                // if (is_working_time() && global.recordedCameras.includes(camera_ip)) db.save_snapshot(snapshot, camera_ip)
             }
         } catch (error) {
             console.log("translation update error", error)
