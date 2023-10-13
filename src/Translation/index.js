@@ -116,7 +116,7 @@ class Translation {
         const {snapshot, model_weight, camera_ip} = this.detector_queue[0]
         const detected_snapshot = await detector.detect(model_weight, snapshot)
         this.distribute(camera_ip, detected_snapshot)
-        // if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_snapshot(detected_snapshot, camera_ip)
+        if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_snapshot(detected_snapshot, camera_ip)
         this.detector_queue.shift()
         this.detector_queue[0] ? this.detect_cycle() : this.is_detector_sleep = true
     }

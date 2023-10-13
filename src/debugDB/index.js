@@ -45,7 +45,7 @@ async function save_snapshot(snapshot, camera_ip) {
 	snapshot.buffer = compressed_buffer
 	const {received, buffer, detections, detected_time} = snapshot
 	db[camera_ip].run(
-		`insert INTO snapshots(received, buffer, detections, detected_time) VALUES (?,?,?,?,?,?,?)`,
+		`insert INTO snapshots(received, buffer, detections, detected_time) VALUES (?,?,?,?)`,
 		[received, buffer, JSON.stringify(detections), detected_time],
 		(err) => { if (err) console.log(err.message) }
 	)
