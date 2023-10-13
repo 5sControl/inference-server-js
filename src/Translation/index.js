@@ -5,8 +5,8 @@ const {checkDirs} = require("../utils/Path")
 const Detector = require("../Detector")
 const detector = new Detector()
 const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
-const {save_camera_info, save_snapshot, save_screenshot} = require("../debugDB")
-const { is_working_time } = require("../utils/Date")
+// const {save_camera_info, save_snapshot, save_screenshot} = require("../debugDB")
+// const { is_working_time } = require("../utils/Date")
 
 class Translation {
 
@@ -22,7 +22,7 @@ class Translation {
             const received = new Date()
             if (this.isCameraProcessed(camera_ip)) {
                 // 1. save_screenshot(camera_ip, received, screenshot)
-                if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_screenshot(camera_ip, received, screenshot)
+                // if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_screenshot(camera_ip, received, screenshot)
                 let snapshot = this.update(camera_ip, received, screenshot)
                 if (snapshot) {
                     // 2. add_to_detector_queue
@@ -49,11 +49,11 @@ class Translation {
             checkDirs([`images/${client.camera_ip}`])
             let model_weight = hardCameras.includes(client.camera_ip) ? "l" : "s"
             this.cameras[client.camera_ip].model_weight = model_weight
-            const camera_info = {
-                detected_by: model_weight,
-                zones: client.zones
-            }
-            save_camera_info(client.camera_ip, camera_info)
+            // const camera_info = {
+            //     detected_by: model_weight,
+            //     zones: client.zones
+            // }
+            // save_camera_info(client.camera_ip, camera_info)
             await detector.checkModel(model_weight)
         }
         console.log("new algorithm subscribed: ", client)
@@ -116,7 +116,7 @@ class Translation {
         const {snapshot, model_weight, camera_ip} = this.detector_queue[0]
         const detected_snapshot = await detector.detect(model_weight, snapshot)
         this.distribute(camera_ip, detected_snapshot)
-        if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_snapshot(detected_snapshot, camera_ip)
+        // if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_snapshot(detected_snapshot, camera_ip)
         this.detector_queue.shift()
         this.detector_queue[0] ? this.detect_cycle() : this.is_detector_sleep = true
     }
