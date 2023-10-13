@@ -6,7 +6,7 @@ const Detector = require("../Detector")
 const detector = new Detector()
 const hardCameras = ["0.0.0.0", "10.20.100.40", "10.20.100.43"]
 const {save_camera_info, save_snapshot, save_screenshot} = require("../debugDB")
-// const { is_working_time } = require("../utils/Date")
+const { is_working_time } = require("../utils/Date")
 
 class Translation {
 
@@ -22,6 +22,7 @@ class Translation {
             const received = new Date()
             if (this.isCameraProcessed(camera_ip)) {
                 // 1. save_screenshot(camera_ip, received, screenshot)
+                if (is_working_time() && global.recordedCameras.includes(camera_ip)) save_screenshot(camera_ip, received, screenshot)
                 let snapshot = this.update(camera_ip, received, screenshot)
                 if (snapshot) {
                     // 2. add_to_detector_queue

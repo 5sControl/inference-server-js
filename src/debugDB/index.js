@@ -33,9 +33,10 @@ async function save_camera_info(camera_ip, camera_info) {
 	)
 }
 async function save_screenshot(camera_ip, received, buffer) {
+	const compressed_buffer = await compress_buffer(buffer)
 	db[camera_ip].run(
-		`insert INTO snapshots(received, buffer) VALUES (?,?)`,
-		[received, buffer],
+		`insert INTO screenshots(received, buffer) VALUES (?,?)`,
+		[received, compressed_buffer],
 		(err) => { if (err) console.log(err.message) }
 	)
 }
