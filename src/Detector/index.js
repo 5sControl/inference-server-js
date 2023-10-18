@@ -1,4 +1,4 @@
-const loadYoloNAS = require("./models/yolo-nas")
+const loadYoloV8 = require('./models/yolov8')
 
 class Detector {
 
@@ -7,7 +7,7 @@ class Detector {
     async checkModel(model_weight) {
         if (!this.model[model_weight]) {
             console.time(`detector ${model_weight}-model load`)
-            this.model[model_weight] = await loadYoloNAS(model_weight)
+            this.model[model_weight] = await loadYoloV8(model_weight)
             console.timeEnd(`detector ${model_weight}-model load`)
         }
     }

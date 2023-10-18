@@ -47,7 +47,7 @@ class Translation {
                 isDetect: true
             }
             checkDirs([`images/${client.camera_ip}`])
-            let model_weight = hardCameras.includes(client.camera_ip) ? "l" : "s"
+            let model_weight = hardCameras.includes(client.camera_ip) ? "l" : "m"
             this.cameras[client.camera_ip].model_weight = model_weight
             // const camera_info = {
             //     detected_by: model_weight,
