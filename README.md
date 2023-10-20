@@ -95,6 +95,8 @@ We also have a list of [good first issues](https://github.com/5sControl/inferenc
 # **License**
 [AGPL-3.0](LICENSE)
 
+> Machine control JS uses third party libraries that are distributed under their own terms (see [LICENSE-3RD-PARTY.md](https://github.com/5sControl/inference-server-js/blob/main/LICENSE-3RD-PARTY.md)).<br>
+
 <br>
 <div align="center">
   <a href="https://5controls.com/" style="text-decoration:none;">
