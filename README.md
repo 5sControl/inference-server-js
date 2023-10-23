@@ -1,42 +1,20 @@
-<p align="center">
-  <img src="https://github.com/5sControl/.github/assets/131950264/d65c5be1-1cca-46a1-b564-ef4364f0dbc6" alt="5controlS" height = "320" />
-</p>
+# Inference server JS for Machine control JS algorithm
 
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
+# About Machine control JS
+Machine control is one of the Official [5controlS](https://5controls.com/) algorithm.
 
-**[5controlS](https://5controls.com/)** is an open source AI-powered manufacturing operations platform that helps companies improve productivity, eliminate waste, and enhance workplace safety using computer vision (CV) and machine learning (ML). 
+Designed to handle complex industrial processes with ease, this innovative tool is perfect for use with semi-automated equipment. With Machine Control you can optimize your industrial processes and keep your equipment running smoothly, saving you time and money.
 
-The platform generates detailed reports to provide insights on how processes can be optimized.
+![Frame 2608741](https://github.com/5sControl/machine-control/assets/131950264/5c074f95-2ea6-4247-9aba-5efe944b7188)
 
-Plug-in your ML-algorithms or some of the Official 5s algorithms and get a ready-to-use software for manufacturing monitoring.
+## Key features
 
-# **Project repositories**
+- monitors use of equipment;
+- prevents downtime of valuable and expensive equipment.
 
-The connections between the project repositories are illustrated by the following diagram. 
+**Plug-in Machine control to 5controlS platform to detect when your workers are absent!**
 
-> Please note that to ensure system stability and perfomance you can use one of the Official 5S algorithms instead of Your Algorithm.
-
-<p align="center">
-  <img src="https://github.com/5sControl/5s-backend/assets/131950264/60cbc463-ce88-4af2-a4ed-7e3c01f7a955" alt="5controlS-diagram" />
-</p>
-
-**5controlS Platform:**
-1. [5s-backend](https://github.com/5sControl/5s-backend)
-2. [5s-frontend](https://github.com/5sControl/5s-frontend)
-3. [5s-algorithms-controller](https://github.com/5sControl/5s-algorithms-controller)
-4. [5s-onvif](https://github.com/5sControl/5s-onvif)
-5. [5s-onvif-finder](https://github.com/5sControl/5s-onvif-finder))
-
-**Official Algorithms:**
-1. [min-max](https://github.com/5sControl/min-max)
-2. [idle-control](https://github.com/5sControl/idle-control)
-3. [operation-control-js](https://github.com/5sControl/operation-control-js)
-4. [machine-control](https://github.com/5sControl/machine-control)
-5. [machine-control-js](https://github.com/5sControl/machine-control-js)
-
-**Algorithms Servers:**
-1. [inference-server-js](https://github.com/5sControl/inference-server-js)
-
+> Learn more about Machine control JS on the [5controlS website](https://5controls.com/solutions/machine-control).
 
 # Inference Server API for algorithm developer
 After starting the container, connect to the socket server via {process.env.server_url}:9999, after which a subscription is issued for an incoming event (”snapshot detected").
@@ -73,14 +51,11 @@ const io = require('socket.io-client')
 /* ------------------------------------------------------------------------------------------------- **/
 ```
 
-
 # **Documentation**
 
+[Documentation for Developers](https://github.com/5sControl/5s-dev-documentation/wiki)
+
 [User Documentation](https://github.com/5sControl/Manufacturing-Automatization-Enterprise/wiki)
-
-[Installation Guide Pt.1](https://5controls.com/blog/installing-5s-control-software)
-
-[Installation Guide Pt.2](https://5controls.com/blog/installing-5s-control-software-part-2-docker)
 
 # **Contributing**
 Thank you for considering contributing to 5controlS. We truly believe that we can build an outstanding product together!
@@ -95,11 +70,32 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 If you want to contribute, read  our [contributing guide](CONTRIBUTING.md) to learn about our development process and pull requests workflow.
 
-We also have a list of [good first issues]() that will help you make your first step to beсoming a 5S contributor.
+We also have a list of [good first issues](https://github.com/5sControl/inference-server-js/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22) that will help you make your first step to beсoming a 5S contributor.
+
+# **Project repositories**
+
+**5controlS Platform:**
+1. [5s-webserver](https://github.com/5sControl/5s-webserver)
+2. [5s-backend](https://github.com/5sControl/5s-backend)
+3. [5s-frontend](https://github.com/5sControl/5s-frontend)
+4. [5s-algorithms-controller](https://github.com/5sControl/5s-algorithms-controller)
+5. [5s-onvif](https://github.com/5sControl/5s-onvif)
+6. [5s-onvif-finder](https://github.com/5sControl/5s-onvif-finder)
+  
+**Official Algorithms:**
+1. [min-max](https://github.com/5sControl/min-max)
+2. [idle-control](https://github.com/5sControl/idle-control)
+3. [operation-control-js](https://github.com/5sControl/operation-control-js)
+4. [machine-control](https://github.com/5sControl/machine-control)
+5. [machine-control-js](https://github.com/5sControl/machine-control-js)
+
+**Algorithms Servers:**
+1. [inference-server-js](https://github.com/5sControl/inference-server-js) - the server for Machine control JS algorithm
 
 # **License**
+[AGPL-3.0](LICENSE)
 
-> Please note that [some](Components-with-copyleft-licensies.md) of the Official Algorithms are using copyleft licensies.  
+> Machine control JS uses third party libraries that are distributed under their own terms (see [LICENSE-3RD-PARTY.md](https://github.com/5sControl/inference-server-js/blob/main/LICENSE-3RD-PARTY.md)).<br>
 
 <br>
 <div align="center">
