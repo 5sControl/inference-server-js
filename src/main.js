@@ -14,12 +14,13 @@ ws.on("connection", async (socket) => {
     const client = {
         id: socket.id,
         camera_ip: socket.request._query.camera_ip,
-        zones: socket.request._query.zones
+        zones: socket.request._query.zones,
+        algorithm_name: socket.request._query.algorithm_name
     }
     socket.join(client.camera_ip)
     await translation.addClient(client)
 
-    socket.on("send report", async ({snapshots, extra}, response) => {
+    socket.on("send report", async ({snapshots, extra, algorithm_name}, response) => {
         try {
             if (snapshots.length !== 4) {                
                 console.log("get snapshots from mcjs", snapshots, extra)
@@ -27,7 +28,8 @@ ws.on("connection", async (socket) => {
             await report.prepare(
                 snapshots,
                 extra,
-                client.camera_ip
+                client.camera_ip,
+                algorithm_name
             )
             response({ status: "inference server: report sended" })
         } catch (error) {

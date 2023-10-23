@@ -23,9 +23,9 @@ const report = {
         )
         return imagePath
     },
-    send(photos_for_report, extra, camera_ip) {
+    send(photos_for_report, extra, camera_ip, algorithm_name) {
         const json = {
-            "algorithm": process.env.algorithm_name || "machine_control_js",
+            "algorithm": algorithm_name || "machine_control_js",
             "camera": camera_ip,
             "start_tracking": photos_for_report[0].date,
             "stop_tracking": photos_for_report[photos_for_report.length - 1].date,
@@ -48,7 +48,7 @@ const report = {
             console.log("report sended", body)
         }
     },
-    async prepare(snapshots, extra, camera_ip) {
+    async prepare(snapshots, extra, camera_ip, algorithm_name) {
         if (snapshots.length !== 4) {
             console.log("start prepare snapshots", snapshots, extra)
         }
@@ -60,7 +60,7 @@ const report = {
         if (photos_for_report.length !== 4) {                
             console.log("photos_for_report incorrect size after preparing", photos_for_report)
         }
-        this.send(photos_for_report, extra, camera_ip)
+        this.send(photos_for_report, extra, camera_ip, algorithm_name)
     }
 }
 
