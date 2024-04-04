@@ -1,7 +1,7 @@
 # Inference server JS for Machine control JS algorithm
 
 # About Machine control JS
-Machine control is one of the Official [5controlS](https://5controls.com/) algorithm. Plug it in our video monitoring system with AI analysis and ERP Integration (Open Source) to increase the efficiency of your processes.
+Machine control is one of the Official [5sControl](https://5scontrol.com/) algorithm. Plug it in our video monitoring system with AI analysis and ERP Integration (Open Source) to increase the efficiency of your processes.
 
 Designed to handle complex industrial processes with ease, this innovative tool is perfect for use with semi-automated equipment. With Machine Control you can optimize your industrial processes and keep your equipment running smoothly, saving you time and money.
 
@@ -12,9 +12,9 @@ Designed to handle complex industrial processes with ease, this innovative tool 
 - monitors use of equipment;
 - prevents downtime of valuable and expensive equipment.
 
-**Plug-in Machine control to 5controlS platform to detect when your workers are absent!**
+**Plug-in Machine control to 5sControl platform to detect when your workers are absent!**
 
-> Learn more about Machine control JS on the [5controlS website](https://5controls.com/solutions/machine-control).
+> Learn more about Machine control JS on the [5sControl website](https://5scontrol.com/solutions/machine-control).
 
 # Inference Server API for algorithm developer
 After starting the container, connect to the socket server via {process.env.server_url}:9999, after which a subscription is issued for an incoming event (”snapshot detected").
@@ -58,9 +58,9 @@ const io = require('socket.io-client')
 [User Documentation](https://github.com/5sControl/Manufacturing-Automatization-Enterprise/wiki)
 
 # **Contributing**
-Thank you for considering contributing to 5controlS. We truly believe that we can build an outstanding product together!
+Thank you for considering contributing to 5sControl. We truly believe that we can build an outstanding product together!
 
-We welcome a variety of ways to contribute. Read below to learn how you can take part in improving 5controlS.
+We welcome a variety of ways to contribute. Read below to learn how you can take part in improving 5sControl.
 
 ## **Code of conduct**
 
@@ -99,7 +99,7 @@ We also have a list of [good first issues](https://github.com/5sControl/inferenc
 
 <br>
 <div align="center">
-  <a href="https://5controls.com/" style="text-decoration:none;">
+  <a href="https://5scontrol.com/" style="text-decoration:none;">
     <img src="https://github.com/5sControl/Manufacturing-Automatization-Enterprise/blob/3bafa5805821a34e8b825df7cc78e00543fd7a58/assets/Property%201%3DVariant4.png" width="10%" alt="" /></a> 
   <img src="https://github.com/5sControl/5s-backend/assets/131950264/d48bcf5c-8aa6-42c4-a47d-5548ae23940d" width="3%" alt="" />
   <a href="https://github.com/5sControl" style="text-decoration:none;">
